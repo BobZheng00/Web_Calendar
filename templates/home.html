@@ -1,0 +1,14 @@
+{% extends "base.html" %} 
+ 
+{% block main_content %}
+<div class="row">
+    <div class="col-lg-6">
+        {% if request.user.is_authenticated %}
+            <h3>Welcome to Calendar Channel!</h3>
+        {% else %}
+            <h3>Welcome to Calendar Channel!</h3><span><a href="{% url 'login' %}">Click here to login in order to use all functions</a></span>
+        {% endif %}
+        <hr>
+    </div>
+</div>
+{% endblock %}
