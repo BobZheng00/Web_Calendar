@@ -76,13 +76,14 @@ def calendar_day(request):
         description = request.POST.get('description')
         repeat = request.POST.get('repeat')
         repeat_end = request.POST.get('repeat_end')
-        begin_time = int(begin_hr) * 100 + int(begin_min)
-        end_time = int(end_hr) * 100 + int(end_min)
+
 
         if request.POST.get("create"):
             if event == "" or begin_hr == '' or begin_min == '' or end_hr == '' or end_min == '':
                 messages.info(request, 'Key features are empty')
             else:
+                begin_time = int(begin_hr) * 100 + int(begin_min)
+                end_time = int(end_hr) * 100 + int(end_min)
                 if begin_time >= end_time:
                     messages.info(request, 'End time is earlier than and equal to Begin time')
                 else:
@@ -114,6 +115,8 @@ def calendar_day(request):
 
         if request.POST.get("delete"):
             try:
+                begin_time = int(begin_hr) * 100 + int(begin_min)
+                end_time = int(end_hr) * 100 + int(end_min)
                 UserEvents.objects.filter(event=event, date=dt_obj, beginning=begin_time, end=end_time,
                                           user_id_id=current_user.id, description=description).delete()
             except Exception:
@@ -127,6 +130,7 @@ def calendar_day(request):
         event_list.append(model_to_dict(event))
     event_js = json.dumps(event_list, default=str)
     context['events'] = event_js
+    context['date'] = str(dt_obj)
 
     print(event_js)
     return render(request, 'calendar_day.html', context)
