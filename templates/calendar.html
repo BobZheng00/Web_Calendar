@@ -91,7 +91,7 @@ const renderCalendar = () => {
       i === new Date().getDate() &&
       date.getMonth() === new Date().getMonth()
     ) {
-      days += `<div class="today" id='${i}' onclick="sayHello()">${i}</div>`;
+      days += `<div class="today" id='${i}' onclick="sayHello(this.id)">${i}</div>`;
     } else {
       days += `<div id='${i}' onclick="sayHello(this.id)">${i}</div>`;
     }
