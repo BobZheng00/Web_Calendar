@@ -43,3 +43,20 @@ def login_page(request):
 def logout_user(request):
     logout(request)
     return redirect('/')
+
+
+def calendar_month(request):
+    if request.method == 'POST':
+        year = request.POST['year']
+        month = request.POST['month']
+        day = request.POST['day']
+        request.session['date'] = {'year': year, 'month': month, 'day': day}
+        print(year, month, day)
+    return render(request, 'calendar.html')
+
+
+def calendar_day(request):
+    if request.method == 'POST':
+        pass
+    date = request.session['date']
+    return render(request, 'calendar_day.html')

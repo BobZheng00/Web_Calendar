@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<style>
+/*************************
+ * GRID SCHEDULE LAYOUT
+ *************************/
+@media screen and (min-width:700px) {
+  .schedule {
+    display: grid;
+    grid-gap: 1em;
+    grid-template-rows:
+      [tracks] auto
+      [time-0600] 1fr
+      [time-0630] 1fr
+      [time-0700] 1fr
+      [time-0730] 1fr
+      [time-0800] 1fr
+      [time-0830] 1fr
+      [time-0900] 1fr
+      [time-0930] 1fr
+      [time-1000] 1fr
+      [time-1030] 1fr
+      [time-1100] 1fr
+      [time-1130] 1fr
+      [time-1200] 1fr
+      [time-1230] 1fr
+      [time-1300] 1fr
+      [time-1330] 1fr
+      [time-1400] 1fr
+      [time-1430] 1fr
+      [time-1500] 1fr
+      [time-1530] 1fr
+      [time-1600] 1fr
+      [time-1630] 1fr
+      [time-1700] 1fr
+      [time-1730] 1fr
+      [time-1800] 1fr
+      [time-1830] 1fr
+      [time-1900] 1fr
+      [time-1930] 1fr
+      [time-2000] 1fr
+      [time-2030] 1fr
+      [time-2100] 1fr
+      [time-2130] 1fr
+      [time-2200] 1fr
+      [time-2230] 1fr
+      [time-2300] 1fr
+      [time-2330] 1fr
+      [time-2400] 1fr;
+
+  ;
+      /* Note 1:
+      Use 24hr time for gridline names for simplicity
+
+      Note 2: Use "auto" instead of "1fr" for a more compact schedule where height of a slot is not proportional to the session length. Implementing a "compact" shortcode attribute might make sense for this!
+      Try 0.5fr for more compact equal rows. I don't quite understand how that works :)
+      */
+
+    grid-template-columns:
+      [times] 4em
+      [track-1-start] 3fr
+      [track-1-end track-2-start] 1fr
+      [track-2-end track-3-start] 1fr
+      [track-3-end track-4-start] 1fr
+      [track-4-end];
+  }
+}
+
+.time-slot {
+  grid-column: times;
+}
+
+.track-slot {
+  display: none; /* hidden on small screens and browsers without grid support */
+}
+
+@supports( display:grid ) {
+  @media screen and (min-width:700px) {
+    .track-slot {
+      display: block;
+      padding: 10px 5px 5px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: rgba(255,255,255,.9);
+    }
+  }
+}
+
+/* Small-screen & fallback styles */
+.session {
+  margin-bottom:  1em;
+}
+
+@supports( display:grid ) {
+  @media screen and (min-width: 700px) {
+    .session {
+      margin: 0;
+    }
+  }
+}
+
+/*************************
+ * VISUAL STYLES
+ * Design-y stuff ot particularly important to the demo
+ *************************/
+body {
+  padding: 50px;
+  max-width: 1100px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.session {
+  padding: .5em;
+  border-radius: 2px;
+  font-size: 14px;
+  box-shadow:
+    rgba(255,255,255,.6) 1px 1px 0,
+    rgba(0,0,0,.3) 4px 4px 0;
+}
+
+.session-title,
+.session-time,
+.session-track,
+.session-presenter {
+  display: block;
+}
+
+.session-title,
+.time-slot {
+  margin: 0;
+  font-size: 1em;
+}
+
+.session-title a {
+    color: #fff;
+    text-decoration-style: dotted;
+}
+
+.session-title a :hover {
+    font-style: italic;
+  }
+
+.session-title a :focus {
+    outline: 2px dotted rgba(255,255,255,.8);
+  }
+
+
+.track-slot,
+.time-slot {
+  font-weight: bold;
+  font-size:.75em;
+}
+
+.track-1 {
+  background-color: #11be7c;
+  color: #fff;
+}
+
+.track-2 {
+  background-color: #687f00;
+  color: #fff;
+}
+
+.track-3 {
+  background-color: #544D69;
+  color: #fff;
+}
+
+.track-4 {
+  background-color: #c35500;
+  color: #fff;
+}
+
+.track-all {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ccc;
+  color: #000;
+  box-shadow: none;
+}
+
+.text {
+  max-width: 750px;
+  font-size: 18px;
+  margin: 0 auto 50px;
+}
+
+.meta {
+  color: #555;
+  font-style: italic;
+}
+
+.meta a {
+  color: #555;
+}
+
+hr {
+  margin: 40px 0;
+}
+
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 400px;
+  background-color: #f1f1f1;
+  position: fixed;
+  top: 54px;
+  right: 0px;
+  height: 100%;
+  overflow: auto;
+}
+
+/* Sidebar links */
+.sidebar a {
+  display: block;
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+}
+
+/* Active/current link */
+.sidebar a.active {
+  background-color: #04AA6D;
+  color: white;
+}
+
+/* Links on mouse-over */
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
+/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
+div.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px;
+}
+
+/* On screens that are less than 700px wide, make the sidebar into a topbar */
+@media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  div.content {margin-left: 0;}
+}
+
+/* On screens that are less than 400px, display the bar vertically, instead of horizontally */
+@media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
+  }
+}
+</style>
+
+<div class="sidebar">
+  <a class="active" href="/calendar">Back to Month</a>
+
+</div>
+
+
+<h2 id="schedule-heading">Conference Schedule</h2>
+<div class="schedule" aria-labelledby="schedule-heading">
+
+<!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-1; grid-row: tracks;">Track 1</span>-->
+<!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-2; grid-row: tracks;">Track 2</span>-->
+<!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-3; grid-row: tracks;">Track 3</span>-->
+<!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-4; grid-row: tracks;">Track 4</span>-->
+    <h2 class="time-slot" style="grid-row: time-0600;">6:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-0630;">6:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-0700;">7:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-0730;">7:30am</h2>
+  <h2 class="time-slot" style="grid-row: time-0800;">8:00am</h2>
+
+  <div class="session session-1 track-1" style="grid-column: track-1; grid-row: time-0800 / time-0830;">
+    <h3 class="session-title"><a href="#">Talk Title</a></h3>
+    <span class="session-time">8:00 - 9:00</span>
+    <span class="session-track">Track: 1</span>
+    <span class="session-presenter">Presenter</span>
+  </div>
+
+  <h2 class="time-slot" style="grid-row: time-0830;">8:30am</h2>
+
+
+  <h2 class="time-slot" style="grid-row: time-0900;">9:00am</h2>
+
+  <div class="session session-6 track-1" style="grid-column: track-1; grid-row: time-0900 / time-1000;">
+    <h3 class="session-title"><a href="#">Talk Title</a></h3>
+    <span class="session-time">9:00 - 10:00</span>
+    <span class="session-track">Track: 1 & 2</span>
+    <span class="session-presenter">Presenter</span>
+  </div>
+
+  <h2 class="time-slot" style="grid-row: time-0930;">9:30am</h2>
+
+  <h2 class="time-slot" style="grid-row: time-1000;">10:00am</h2>
+
+
+  <h2 class="time-slot" style="grid-row: time-1030;">10:30am</h2>
+
+  <div class="session session-8 track-1" style="grid-column: track-1; grid-row: time-1030 / time-1130;">
+    <h3 class="session-title"><a href="#">Talk Title</a></h3>
+    <span class="session-time">10:30 - 11:30</span>
+    <span class="session-track">Track: 1</span>
+    <span class="session-presenter">Presenter</span>
+  </div>
+
+  <h2 class="time-slot" style="grid-row: time-1100;">11:00am</h2>
+  <h2 class="time-slot" style="grid-row: time-1130;">11:30am</h2>
+  <h2 class="time-slot" style="grid-row: time-1200;">12:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-1230;">12:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-1300;">13:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-1330;">13:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-1400;">14:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-1430;">14:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-1500;">15:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-1530;">15:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-1600;">16:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-1630;">16:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-1700;">17:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-1730;">17:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-1800;">18:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-1830;">18:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-1900;">19:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-1930;">19:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-2000;">20:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-2030;">20:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-2100;">21:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-2130;">21:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-2200;">22:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-2230;">22:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-2300;">23:00am</h2>
+    <h2 class="time-slot" style="grid-row: time-2330;">23:30am</h2>
+    <h2 class="time-slot" style="grid-row: time-2400;">24:00am</h2>
+
+
+
+
+
+
+</div>
+{% endblock %}
