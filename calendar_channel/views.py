@@ -2,19 +2,27 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .forms import CreateUserForm
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
-from .models import UserEvents
+from .models import UserEvents, Follower
 import datetime
 import json
 from dateutil.rrule import rrule, DAILY, WEEKLY, MONTHLY
 from django.core import serializers
 
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
 # Create your views here.
 
 
 def home(request):
     return render(request, "home.html")
+
+
+def testing(request):
+    return render(request, "test.html")
 
 
 def register_page(request):
@@ -52,6 +60,38 @@ def logout_user(request):
     return redirect('/')
 
 
+def friends_view(request):
+    current_user = request.user
+    friends = {}
+    friends['followed'] = Follower.objects.filter(requester_id=current_user.id, is_agreed=True).count()
+    friends['follower'] = Follower.objects.filter(receiver_id=current_user.id, is_agreed=True).count()
+    friends['requesting'] = []
+    for requesting in Follower.objects.filter(receiver_id=current_user.id, is_agreed=False).values():
+        for single_request in User.objects.filter(id=requesting["requester_id"]).values():
+            friends['requesting'].append(single_request["username"])
+    if is_ajax(request=request):
+        if "requester" in request.GET:
+            requester_id = User.objects.filter(username=request.GET['requester']).get().id
+            Follower.objects.filter(receiver_id=current_user.id, requester_id=requester_id).update(is_agreed=True)
+        else:
+            requester_id = User.objects.filter(username=request.GET['requester_decline']).get().id
+            Follower.objects.filter(receiver_id=current_user.id, requester_id=requester_id).delete()
+
+    elif request.method == 'POST':
+        if request.POST['action'] == "Sent Request":
+            username = request.POST.get('username')
+            if username == request.user.username:
+                messages.info(request, 'You Cannot Follow Yourself')
+            elif not User.objects.filter(username=username).exists():
+                messages.info(request, 'User Not Exist')
+            elif Follower.objects.filter(requester_id=request.user, receiver__username=username).exists():
+                messages.info(request, 'You have Followed the User')
+            else:
+                Follower.objects.create(requester_id=request.user.id, receiver_id=User.objects.get(username=username).id)
+
+    return render(request, 'friends.html', friends)
+
+
 def calendar_month(request):
     if request.method == 'POST':
         year = request.POST['year']
@@ -76,7 +116,6 @@ def calendar_day(request):
         description = request.POST.get('description')
         repeat = request.POST.get('repeat')
         repeat_end = request.POST.get('repeat_end')
-
 
         if request.POST.get("create"):
             if event == "" or begin_hr == '' or begin_min == '' or end_hr == '' or end_min == '':

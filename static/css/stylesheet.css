@@ -1,0 +1,129 @@
+header{
+		background-color: #110F0F;
+		border-bottom: 1px solid #fff;
+	}
+	header h1{
+		color: #13A5AC;
+		font-family: arial;
+		text-transform: uppercase;
+		font-size: 25px;
+		padding: 8px;
+		margin: 0px;
+		font-weight: normal;
+		letter-spacing: 1px;
+	}
+	h2{
+		color: #4E1320;
+		font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+		margin-top: 16px; margin-bottom: 16px; margin-right: 16px; margin-left: 16px;
+		font-size: 30px;
+	}
+
+h3{color: #4E1320;
+		font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+		margin-top: 16px; margin-bottom: 16px; margin-right: 16px; margin-left: 16px;
+		font-size: 16px;
+	
+}
+h4{ color: #110A0A;
+		font-family: Gotham;
+		margin-top: 16px; margin-bottom: 16px; margin-right: 16px; margin-left: 16px;
+		font-size: 20px;
+}
+
+p, li{
+	
+	font-family: gerogia; margin-top: 16px; 
+	color: #121111; margin-bottom: 16px; margin-right: 16px; margin-left: 16px;
+	font-size: 16px;
+}
+
+ul,ol {
+	margin: 16px;
+}
+li {
+	list-style-type:square; padding-left: 16px;
+}
+#spotlight{
+	background-image: url("Worlds_2022_Dates_and_Seeds_Article_Header.jpg");
+	background-position: center;
+	background-size: cover;
+	width: 100%;
+	height: 480px;
+}
+#spotlight span{ 
+	font-size: 140px;
+	color: aliceblue;
+	font-weight: bold;
+	opacity: 0.9;
+	float: right;
+	margin-top: 180px;
+}
+
+#showmaker-photo {
+	float: right;
+	width: 260px;
+	margin-left: 24px;
+	border: 2px solid #3C9A92;
+	padding: 2px;
+		
+}
+nav ul li {
+	list-style-type: none; 
+	display: inline;
+	font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+	text-transform: uppercase;
+		font-weight:700;
+	font-size: 11px;
+	color: aliceblue;
+	margin: 0;
+	padding-right: 30px;
+	border-right: 1px dotted #ECE1E1;
+}
+nav ul{
+	padding: 8px;
+	margin: 0;
+}
+nav{
+	background-color: #666;
+}
+
+nav ul li a {
+	color:aliceblue;
+	text-decoration: none;
+}
+nav ul li a:hover{
+	color: #4CCCC6;
+}
+#main-content{
+	width: 1280px;
+	margin-left: auto;
+	margin-right:auto;
+}
+.feature {
+	background-color:#DBD8D8;
+	height: 240px;
+	width: 630px; 
+	float: left;
+	margin: 0 5px 0 5px;
+}
+.feature p{
+	font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+	font-size: 13px;
+	font-weight: bold;
+	color: #261E1E;
+}
+.stage-teamwe {
+	width: 33%;
+}
+.computer-corner{
+	width: 33%;
+}
+.self-computer{
+	width: 33%;
+}
+footer{
+	width:100%;
+	position:absolute;
+	bottom: 0;
+}

@@ -11,3 +11,10 @@ class UserEvents(models.Model):
     beginning = models.IntegerField(default=0)
     end = models.IntegerField(default=0)
     description = models.TextField(default='')
+
+
+class Follower(models.Model):
+    requester = models.ForeignKey(User, on_delete=models.CASCADE, related_name="requester")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receiver")
+    is_agreed = models.BooleanField(default=False)
+    allowed_access = models.BooleanField(default=False)

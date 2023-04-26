@@ -22,6 +22,23 @@
     <meta charset="UTF-8">
     <title>Calendar Channel</title>
 </head>
+<style>
+    .footer {
+        width: 100%;
+        background-color: #110A0A;
+        color: white;
+        display: flex;
+        justify-content: center;
+        margin: 0 auto;
+
+    }
+    .footer-heading{
+        flex-direction: column;
+        display: flex;
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+</style>
 <body class="body" style="padding-top:65px;">
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
@@ -29,6 +46,7 @@
             <a class="active" href="/">Calendar Channel</a>
                 {% if request.user.is_authenticated %}
             <a href="/calendar">Your Calendar</a>
+            <a href="/friends">Friends</a>
                 <span style="float:right"><a href="{% url 'logout' %}">Logout</a></span>
                 <span style="color: white; float:right; padding: 16px 16px; font-size: 14px;">Hello, {{ request.user }}</span>
             {% else %}
@@ -44,6 +62,19 @@
 <div class="container" style="margin-bottom:50px;">
     {% block main_content %}{% endblock %}
 </div>
+
+{#<div class="footer">#}
+{#    <div class="footer-heading">#}
+{#        <h2>111</h2>#}
+{#    </div>#}
+{#    <div class="footer-heading">#}
+{#        <h2>111</h2>#}
+{#    </div>#}
+{#    <div class="footer-heading">#}
+{#        <h2>111</h2>#}
+{#    </div>#}
+{#</div>#}
+
 </body>
 </html>
 
