@@ -78,10 +78,11 @@ WSGI_APPLICATION = 'Web_Calendar.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Web Calendar',
+        'NAME': 'WebCalendar',
         'USER': 'postgres',
-        'PASSWORD': '720521',
-        'HOST': 'localhost'
+        'PASSWORD': 'Zsy!720521',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
