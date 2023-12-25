@@ -9,22 +9,27 @@ import datetime
 import json
 from dateutil.rrule import rrule, DAILY, WEEKLY, MONTHLY
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
 
 
+@csrf_exempt
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
+
 # Create your views here.
 
-
+@csrf_exempt
 def home(request):
     return render(request, "home.html")
 
 
+@csrf_exempt
 def testing(request):
     return render(request, "test.html")
 
 
+@csrf_exempt
 def register_page(request):
     form = CreateUserForm()
 
@@ -40,6 +45,7 @@ def register_page(request):
     return render(request, 'register.html', context)
 
 
+@csrf_exempt
 def login_page(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -55,11 +61,13 @@ def login_page(request):
     return render(request, 'login.html')
 
 
+@csrf_exempt
 def logout_user(request):
     logout(request)
     return redirect('/')
 
 
+@csrf_exempt
 def friends_view(request):
     current_user = request.user
     friends = {}
@@ -87,11 +95,13 @@ def friends_view(request):
             elif Follower.objects.filter(requester_id=request.user, receiver__username=username).exists():
                 messages.info(request, 'You have Followed the User')
             else:
-                Follower.objects.create(requester_id=request.user.id, receiver_id=User.objects.get(username=username).id)
+                Follower.objects.create(requester_id=request.user.id,
+                                        receiver_id=User.objects.get(username=username).id)
 
     return render(request, 'friends.html', friends)
 
 
+@csrf_exempt
 def calendar_month(request):
     if request.method == 'POST':
         year = request.POST['year']
@@ -102,6 +112,7 @@ def calendar_month(request):
     return render(request, 'calendar.html')
 
 
+@csrf_exempt
 def calendar_day(request):
     current_user = request.user
     date = request.session['date']
