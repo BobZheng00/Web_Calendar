@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-<style>
-/*************************
- * GRID SCHEDULE LAYOUT
- *************************/
-@media screen and (min-width:700px) {
-  .schedule {
-    display: grid;
-    grid-gap: 1em;
-    grid-template-rows:
+    <style>
+        /*************************
+         * GRID SCHEDULE LAYOUT
+         *************************/
+        @media screen and (min-width:700px) {
+            .schedule {
+                display: grid;
+                grid-gap: 1em;
+                grid-template-rows:
       [tracks] auto
       [time-600] 1fr
       [time-630] 1fr
@@ -49,464 +49,485 @@
       [time-2330] 1fr
       [time-2400] 1fr;
 
-  ;
-      /* Note 1:
-      Use 24hr time for gridline names for simplicity
+            ;
+                /* Note 1:
+                Use 24hr time for gridline names for simplicity
 
-      Note 2: Use "auto" instead of "1fr" for a more compact schedule where height of a slot is not proportional to the session length. Implementing a "compact" shortcode attribute might make sense for this!
-      Try 0.5fr for more compact equal rows. I don't quite understand how that works :)
-      */
+                Note 2: Use "auto" instead of "1fr" for a more compact schedule where height of a slot is not proportional to the session length. Implementing a "compact" shortcode attribute might make sense for this!
+                Try 0.5fr for more compact equal rows. I don't quite understand how that works :)
+                */
 
-    grid-template-columns:
+                grid-template-columns:
       [times] 4em
       [track-1-start] 3fr
       [track-1-end track-2-start] 1fr
       [track-2-end track-3-start] 1fr
       [track-3-end track-4-start] 1fr
       [track-4-end];
-  }
-}
+            }
+        }
 
-.time-slot {
-  grid-column: times;
-}
+        .time-slot {
+            grid-column: times;
+        }
 
-.track-slot {
-  display: none; /* hidden on small screens and browsers without grid support */
-}
+        .track-slot {
+            display: none; /* hidden on small screens and browsers without grid support */
+        }
 
-@supports( display:grid ) {
-  @media screen and (min-width:700px) {
-    .track-slot {
-      display: block;
-      padding: 10px 5px 5px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background-color: rgba(255,255,255,.9);
-    }
-  }
-}
+        @supports( display:grid ) {
+            @media screen and (min-width:700px) {
+                .track-slot {
+                    display: block;
+                    padding: 10px 5px 5px;
+                    position: sticky;
+                    top: 0;
+                    z-index: 1000;
+                    background-color: rgba(255,255,255,.9);
+                }
+            }
+        }
 
-/* Small-screen & fallback styles */
-.session {
-  margin-bottom:  1em;
-}
+        /* Small-screen & fallback styles */
+        .session {
+            margin-bottom:  1em;
+        }
 
-@supports( display:grid ) {
-  @media screen and (min-width: 700px) {
-    .session {
-      margin: 0;
-    }
-  }
-}
+        @supports( display:grid ) {
+            @media screen and (min-width: 700px) {
+                .session {
+                    margin: 0;
+                }
+            }
+        }
 
-/*************************
- * VISUAL STYLES
- * Design-y stuff ot particularly important to the demo
- *************************/
-body {
-  padding: 50px;
-  max-width: 1100px;
-  margin: 0 auto;
-  line-height: 1.5;
-}
+        /*************************
+         * VISUAL STYLES
+         * Design-y stuff ot particularly important to the demo
+         *************************/
+        body {
+            padding: 50px;
+            max-width: 1100px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
 
-.session {
-  padding: .5em;
-  border-radius: 2px;
-  font-size: 14px;
-  box-shadow:
-    rgba(255,255,255,.6) 1px 1px 0,
-    rgba(0,0,0,.3) 4px 4px 0;
-}
+        .session {
+            padding: .5em;
+            border-radius: 2px;
+            font-size: 14px;
+            box-shadow:
+                    rgba(255,255,255,.6) 1px 1px 0,
+                    rgba(0,0,0,.3) 4px 4px 0;
+        }
 
-.session-title,
-.session-time,
-.session-track,
-.session-presenter {
-  display: block;
-}
+        .session-title,
+        .session-time,
+        .session-track,
+        .session-presenter {
+            display: block;
+        }
 
-.session-title,
-.time-slot {
-  margin: 0;
-  font-size: 1em;
-}
+        .session-title,
+        .time-slot {
+            margin: 0;
+            font-size: 1em;
+        }
 
-.session-title a {
-    color: #fff;
-    text-decoration-style: dotted;
-}
+        .session-title a {
+            color: #fff;
+            text-decoration-style: dotted;
+        }
 
-.session-title a :hover {
-    font-style: italic;
-  }
+        .session-title a :hover {
+            font-style: italic;
+        }
 
-.session-title a :focus {
-    outline: 2px dotted rgba(255,255,255,.8);
-  }
+        .session-title a :focus {
+            outline: 2px dotted rgba(255,255,255,.8);
+        }
 
 
-.track-slot,
-.time-slot {
-  font-weight: bold;
-  font-size:.75em;
-}
+        .track-slot,
+        .time-slot {
+            font-weight: bold;
+            font-size:.75em;
+        }
 
-.track-1 {
-  background-color: #11be7c;
-  color: #fff;
-}
+        .track-1 {
+            background-color: #11be7c;
+            color: #fff;
+        }
 
-.track-2 {
-  background-color: #687f00;
-  color: #fff;
-}
+        .track-2 {
+            background-color: #687f00;
+            color: #fff;
+        }
 
-.track-3 {
-  background-color: #544D69;
-  color: #fff;
-}
+        .track-3 {
+            background-color: #544D69;
+            color: #fff;
+        }
 
-.track-4 {
-  background-color: #c35500;
-  color: #fff;
-}
+        .track-4 {
+            background-color: #c35500;
+            color: #fff;
+        }
 
-.track-all {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #ccc;
-  color: #000;
-  box-shadow: none;
-}
+        .track-all {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #ccc;
+            color: #000;
+            box-shadow: none;
+        }
 
-.text {
-  max-width: 750px;
-  font-size: 18px;
-  margin: 0 auto 50px;
-}
+        .text {
+            max-width: 750px;
+            font-size: 18px;
+            margin: 0 auto 50px;
+        }
 
-.meta {
-  color: #555;
-  font-style: italic;
-}
+        .meta {
+            color: #555;
+            font-style: italic;
+        }
 
-.meta a {
-  color: #555;
-}
+        .meta a {
+            color: #555;
+        }
 
-hr {
-  margin: 40px 0;
-}
+        hr {
+            margin: 40px 0;
+        }
 
-.sidebar {
-  margin: 0;
-  padding: 0;
-  width: 400px;
-  background-color: #f1f1f1;
-  position: fixed;
-  top: 54px;
-  right: 0px;
-  height: 100%;
-  overflow: auto;
-}
+        .sidebar {
+            margin: 0;
+            padding: 0;
+            width: 400px;
+            background-color: #f1f1f1;
+            position: fixed;
+            top: 54px;
+            right: 0px;
+            height: 100%;
+            overflow: auto;
+        }
 
-/* Sidebar links */
-.sidebar a {
-  display: block;
-  color: black;
-  padding: 16px;
-  text-decoration: none;
-}
+        /* Sidebar links */
+        .sidebar a {
+            display: block;
+            color: black;
+            padding: 16px;
+            text-decoration: none;
+        }
 
-/* Active/current link */
-.sidebar a.active {
-  background-color: #04AA6D;
-  color: white;
-}
+        /* Active/current link */
+        .sidebar a.active {
+            height: 50px;
+            background-color: #04AA6D;
+            color: white;
+        }
 
-/* Links on mouse-over */
-.sidebar a:hover:not(.active) {
-  background-color: #555;
-  color: white;
-}
+        /* Links on mouse-over */
+        .sidebar a:hover:not(.back) {
+            background-color: #555;
+            color: white;
+        }
 
-/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
-div.content {
-  margin-left: 200px;
-  padding: 1px 16px;
-  height: 1000px;
-}
+        .sidebar a:hover:not(.closebtn) {
+            background-color: #068658;
+            color: white;
+        }
 
-/* On screens that are less than 700px wide, make the sidebar into a topbar */
-@media screen and (max-width: 700px) {
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-  }
-  .sidebar a {float: left;}
-  div.content {margin-left: 0;}
-}
+        .sidebar a.closebtn {
+            position: absolute;
+            top: 0;
+            padding-top: 0;
+            right: 0;
+            font-size: 36px;
+            margin-left: 50px;
+            height: 50px;
+        }
 
-/* On screens that are less than 400px, display the bar vertically, instead of horizontally */
-@media screen and (max-width: 400px) {
-  .sidebar a {
-    text-align: center;
-    float: none;
-  }
-}
+        .sidebar a.back {
+            height: 50px;
+            background-color: #04AA6D;
+            color: white;
+        }
 
-input[type='number']{
-    width: 80px;
-}
+        .sidebar form {
+            margin-left: 10px;
+        }
 
-.closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
-}
+        /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
+        div.content {
+            margin-left: 200px;
+            padding: 1px 16px;
+            height: 1000px;
+        }
 
-.openbtn {
-  font-size: 20px;
-  cursor: pointer;
-  background-color: #111;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-}
+        /* On screens that are less than 700px wide, make the sidebar into a topbar */
+        @media screen and (max-width: 700px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .sidebar a {float: left;}
+            div.content {margin-left: 0;}
+        }
 
-.openbtn:hover {
-  background-color: #444;
-}
+        /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
+        @media screen and (max-width: 400px) {
+            .sidebar a {
+                text-align: center;
+                float: none;
+            }
+        }
 
-#main {
-  transition: margin-left .5s;
-  padding: 16px;
-}
-</style>
+        input[type='number']{
+            width: 80px;
+        }
 
-<div class="sidebar" id="mySidebar" style="width: 0">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-    <a class="active" href="/calendar">Back to Month</a>
-    <br><br>
-    <form action="" method="post" id="form">
-        {% csrf_token %}
-    Event Name:<input type="text" name="event" id="event"><br><br>
-    Begin At:<br>
-    Hour:<select name="begin_hr" id="begin_hr">
-                <option>  </option>
-                <option value="6"> 6 </option>
-                <option value="7"> 7 </option>
-                <option value="8"> 8 </option>
-                <option value="9"> 9 </option>
-                <option value="10"> 10 </option>
-                <option value="11"> 11 </option>
-                <option value="12"> 12 </option>
-                <option value="13"> 13 </option>
-                <option value="14"> 14 </option>
-                <option value="15"> 15 </option>
-                <option value="16"> 16 </option>
-                <option value="17"> 17 </option>
-                <option value="18"> 18 </option>
-                <option value="19"> 19 </option>
-                <option value="20"> 20 </option>
-                <option value="21"> 21 </option>
-                <option value="22"> 22 </option>
-                <option value="23"> 23 </option>
-              </select>
-    Minutes: <select name="begin_min" id="begin_min">
-                <option selected disabled>  </option>
-                <option value="00"> 00 </option>
-                <option value="30"> 30 </option>
-              </select><br><br>
-    End At:<br>
-    Hour:<select name="end_hr" id="end_hr">
-                <option>  </option>
-                <option value="6"> 6 </option>
-                <option value="7"> 7 </option>
-                <option value="8"> 8 </option>
-                <option value="9"> 9 </option>
-                <option value="10"> 10 </option>
-                <option value="11"> 11 </option>
-                <option value="12"> 12 </option>
-                <option value="13"> 13 </option>
-                <option value="14"> 14 </option>
-                <option value="15"> 15 </option>
-                <option value="16"> 16 </option>
-                <option value="17"> 17 </option>
-                <option value="18"> 18 </option>
-                <option value="19"> 19 </option>
-                <option value="20"> 20 </option>
-                <option value="21"> 21 </option>
-                <option value="22"> 22 </option>
-                <option value="23"> 23 </option>
-                <option value="24"> 24 </option>
 
-              </select>
-    Minutes: <select name="end_min" id="end_min">
-                <option selected disabled>  </option>
-                <option value="00"> 00 </option>
-                <option value="30"> 30 </option>
-              </select><br><br>
-    Description: <input type="text" name="description" id="description"><br><br>
-    Repeat:<select name="repeat" id="repeat">
-              <option value="once">Once</option>
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-    </select>
-    Repeat End Date:<input type="date" name="repeat_end" id="repeat_end"><br><br>
 
-    <button type="submit" name="create" value="Create Event">Create Event</button>
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #111;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+        }
 
-    <button type="submit" name="delete" value="Delete Event">Delete Event</button>
-    </form>
+        .openbtn:hover {
+            background-color: #444;
+        }
+
+        #main {
+            transition: margin-left .5s;
+            padding: 16px;
+        }
+    </style>
+
+    <div class="sidebar" id="mySidebar" style="{% if error_display %}width: 400px{% else %}width: 0{% endif %}">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        <a class="back" href="/calendar">Back to Month</a>
+        <br>
+        <form action="" method="post" id="form">
+            {% csrf_token %}
+            Event Name:<input type="text" name="event" id="event"><br><br>
+            Begin At:<br>
+            Hour:<select name="begin_hr" id="begin_hr">
+            <option>  </option>
+            <option value="6"> 6 </option>
+            <option value="7"> 7 </option>
+            <option value="8"> 8 </option>
+            <option value="9"> 9 </option>
+            <option value="10"> 10 </option>
+            <option value="11"> 11 </option>
+            <option value="12"> 12 </option>
+            <option value="13"> 13 </option>
+            <option value="14"> 14 </option>
+            <option value="15"> 15 </option>
+            <option value="16"> 16 </option>
+            <option value="17"> 17 </option>
+            <option value="18"> 18 </option>
+            <option value="19"> 19 </option>
+            <option value="20"> 20 </option>
+            <option value="21"> 21 </option>
+            <option value="22"> 22 </option>
+            <option value="23"> 23 </option>
+        </select>
+            Minutes: <select name="begin_min" id="begin_min">
+            <option selected disabled>  </option>
+            <option value="00"> 00 </option>
+            <option value="30"> 30 </option>
+        </select><br><br>
+            End At:<br>
+            Hour:<select name="end_hr" id="end_hr">
+            <option>  </option>
+            <option value="6"> 6 </option>
+            <option value="7"> 7 </option>
+            <option value="8"> 8 </option>
+            <option value="9"> 9 </option>
+            <option value="10"> 10 </option>
+            <option value="11"> 11 </option>
+            <option value="12"> 12 </option>
+            <option value="13"> 13 </option>
+            <option value="14"> 14 </option>
+            <option value="15"> 15 </option>
+            <option value="16"> 16 </option>
+            <option value="17"> 17 </option>
+            <option value="18"> 18 </option>
+            <option value="19"> 19 </option>
+            <option value="20"> 20 </option>
+            <option value="21"> 21 </option>
+            <option value="22"> 22 </option>
+            <option value="23"> 23 </option>
+            <option value="24"> 24 </option>
+
+        </select>
+            Minutes: <select name="end_min" id="end_min">
+            <option selected disabled>  </option>
+            <option value="00"> 00 </option>
+            <option value="30"> 30 </option>
+        </select><br><br>
+            Description: <input type="text" name="description" id="description"><br><br>
+            Repeat:<select name="repeat" id="repeat">
+            <option value="once">Once</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+        </select>
+            Repeat End Date:<input type="date" name="repeat_end" id="repeat_end"><br><br>
+
+            <button type="submit" name="create" value="Create Event">Create Event</button>
+
+            <button type="submit" name="delete" value="Delete Event">Delete Event</button>
+            <br><br>
+        </form>
         {% for message in messages %}
-                    <p id="messages">{{ message }}</p>
+            <p id="messages">{{ message }}</p>
         {% endfor %}
-</div>
+    </div>
 
-<div id="main">
-  <button class="openbtn" onclick="openNav()">☰ Open Sidebar</button>
-</div>
-<h2 id="schedule-heading">{{ date }} Schedule</h2>
-<div class="schedule" aria-labelledby="schedule-heading" id="table">
+    <div id="main">
+        <button class="openbtn" onclick="openNav()">☰ Open Sidebar</button>
+    </div>
+    <h2 id="schedule-heading">{{ date }} Schedule</h2>
+    <div class="schedule" aria-labelledby="schedule-heading" id="table">
 
-<!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-1; grid-row: tracks;">Track 1</span>-->
-<!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-2; grid-row: tracks;">Track 2</span>-->
-<!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-3; grid-row: tracks;">Track 3</span>-->
-<!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-4; grid-row: tracks;">Track 4</span>-->
-    <h2 class="time-slot" style="grid-row: time-600;">6:00</h2>
-    <h2 class="time-slot" style="grid-row: time-630;">6:30</h2>
-    <h2 class="time-slot" style="grid-row: time-700;">7:00</h2>
-    <h2 class="time-slot" style="grid-row: time-730;">7:30</h2>
-  <h2 class="time-slot" style="grid-row: time-800;">8:00</h2>
+        <!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-1; grid-row: tracks;">Track 1</span>-->
+        <!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-2; grid-row: tracks;">Track 2</span>-->
+        <!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-3; grid-row: tracks;">Track 3</span>-->
+        <!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-4; grid-row: tracks;">Track 4</span>-->
+        <h2 class="time-slot" style="grid-row: time-600;">6:00</h2>
+        <h2 class="time-slot" style="grid-row: time-630;">6:30</h2>
+        <h2 class="time-slot" style="grid-row: time-700;">7:00</h2>
+        <h2 class="time-slot" style="grid-row: time-730;">7:30</h2>
+        <h2 class="time-slot" style="grid-row: time-800;">8:00</h2>
 
-{#  <div class="session session-1 track-1" style="grid-column: track-1; grid-row: time-800 / time-830;">#}
-{#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
-{#    <span class="session-time">8:00 - 9:00</span>#}
-{#    <span class="session-track">Track: 1</span>#}
-{#    <span class="session-presenter">Presenter</span>#}
-{#  </div>#}
+        {#  <div class="session session-1 track-1" style="grid-column: track-1; grid-row: time-800 / time-830;">#}
+        {#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
+        {#    <span class="session-time">8:00 - 9:00</span>#}
+        {#    <span class="session-track">Track: 1</span>#}
+        {#    <span class="session-presenter">Presenter</span>#}
+        {#  </div>#}
 
-  <h2 class="time-slot" style="grid-row: time-830;">8:30</h2>
-
-
-  <h2 class="time-slot" style="grid-row: time-900;">9:00</h2>
-
-{#  <div class="session session-6 track-1" style="grid-column: track-1; grid-row: time-1100 / time-1200;">#}
-{#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
-{#    <span class="session-time">9:00 - 10:00</span>#}
-{#    <span class="session-track">Track: 1 & 2</span>#}
-{#    <span class="session-presenter">Presenter</span>#}
-{#  </div>#}
-{##}
-{#     <div class="session session-6 track-1" style="grid-column: track-1; grid-row: time-1100 / time-1200;">#}
-{#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
-{#    <span class="session-time">9:00 - 10:00</span>#}
-{#    <span class="session-track">Track: 1 & 2</span>#}
-{#    <span class="session-presenter">Presenter</span>#}
-{#  </div>#}
+        <h2 class="time-slot" style="grid-row: time-830;">8:30</h2>
 
 
+        <h2 class="time-slot" style="grid-row: time-900;">9:00</h2>
 
-  <h2 class="time-slot" style="grid-row: time-930;">9:30</h2>
+        {#  <div class="session session-6 track-1" style="grid-column: track-1; grid-row: time-1100 / time-1200;">#}
+        {#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
+        {#    <span class="session-time">9:00 - 10:00</span>#}
+        {#    <span class="session-track">Track: 1 & 2</span>#}
+        {#    <span class="session-presenter">Presenter</span>#}
+        {#  </div>#}
+        {##}
+        {#     <div class="session session-6 track-1" style="grid-column: track-1; grid-row: time-1100 / time-1200;">#}
+        {#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
+        {#    <span class="session-time">9:00 - 10:00</span>#}
+        {#    <span class="session-track">Track: 1 & 2</span>#}
+        {#    <span class="session-presenter">Presenter</span>#}
+        {#  </div>#}
 
-  <h2 class="time-slot" style="grid-row: time-1000;">10:00</h2>
 
 
-  <h2 class="time-slot" style="grid-row: time-1030;">10:30</h2>
+        <h2 class="time-slot" style="grid-row: time-930;">9:30</h2>
 
-{#  <div class="session session-8 track-1" style="grid-column: track-1; grid-row: time-1030 / time-1130;">#}
-{#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
-{#    <span class="session-time">10:30 - 11:30</span>#}
-{#    <span class="session-track">Track: 1</span>#}
-{#    <span class="session-presenter">Presenter</span>#}
-{#  </div>#}
+        <h2 class="time-slot" style="grid-row: time-1000;">10:00</h2>
 
-  <h2 class="time-slot" style="grid-row: time-1100;">11:00</h2>
-  <h2 class="time-slot" style="grid-row: time-1130;">11:30</h2>
-  <h2 class="time-slot" style="grid-row: time-1200;">12:00</h2>
-    <h2 class="time-slot" style="grid-row: time-1230;">12:30</h2>
-    <h2 class="time-slot" style="grid-row: time-1300;">13:00</h2>
-    <h2 class="time-slot" style="grid-row: time-1330;">13:30</h2>
-    <h2 class="time-slot" style="grid-row: time-1400;">14:00</h2>
-    <h2 class="time-slot" style="grid-row: time-1430;">14:30</h2>
-    <h2 class="time-slot" style="grid-row: time-1500;">15:00</h2>
-    <h2 class="time-slot" style="grid-row: time-1530;">15:30</h2>
-    <h2 class="time-slot" style="grid-row: time-1600;">16:00</h2>
-    <h2 class="time-slot" style="grid-row: time-1630;">16:30</h2>
-    <h2 class="time-slot" style="grid-row: time-1700;">17:00</h2>
-    <h2 class="time-slot" style="grid-row: time-1730;">17:30</h2>
-    <h2 class="time-slot" style="grid-row: time-1800;">18:00</h2>
-    <h2 class="time-slot" style="grid-row: time-1830;">18:30</h2>
-    <h2 class="time-slot" style="grid-row: time-1900;">19:00</h2>
-    <h2 class="time-slot" style="grid-row: time-1930;">19:30</h2>
-    <h2 class="time-slot" style="grid-row: time-2000;">20:00</h2>
-    <h2 class="time-slot" style="grid-row: time-2030;">20:30</h2>
-    <h2 class="time-slot" style="grid-row: time-2100;">21:00</h2>
-    <h2 class="time-slot" style="grid-row: time-2130;">21:30</h2>
-    <h2 class="time-slot" style="grid-row: time-2200;">22:00</h2>
-    <h2 class="time-slot" style="grid-row: time-2230;">22:30</h2>
-    <h2 class="time-slot" style="grid-row: time-2300;">23:00</h2>
-    <h2 class="time-slot" style="grid-row: time-2330;">23:30</h2>
-    <h2 class="time-slot" style="grid-row: time-2400;">24:00</h2>
 
-<div class="eventspace">
+        <h2 class="time-slot" style="grid-row: time-1030;">10:30</h2>
 
-</div>
+        {#  <div class="session session-8 track-1" style="grid-column: track-1; grid-row: time-1030 / time-1130;">#}
+        {#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
+        {#    <span class="session-time">10:30 - 11:30</span>#}
+        {#    <span class="session-track">Track: 1</span>#}
+        {#    <span class="session-presenter">Presenter</span>#}
+        {#  </div>#}
 
-</div>
+        <h2 class="time-slot" style="grid-row: time-1100;">11:00</h2>
+        <h2 class="time-slot" style="grid-row: time-1130;">11:30</h2>
+        <h2 class="time-slot" style="grid-row: time-1200;">12:00</h2>
+        <h2 class="time-slot" style="grid-row: time-1230;">12:30</h2>
+        <h2 class="time-slot" style="grid-row: time-1300;">13:00</h2>
+        <h2 class="time-slot" style="grid-row: time-1330;">13:30</h2>
+        <h2 class="time-slot" style="grid-row: time-1400;">14:00</h2>
+        <h2 class="time-slot" style="grid-row: time-1430;">14:30</h2>
+        <h2 class="time-slot" style="grid-row: time-1500;">15:00</h2>
+        <h2 class="time-slot" style="grid-row: time-1530;">15:30</h2>
+        <h2 class="time-slot" style="grid-row: time-1600;">16:00</h2>
+        <h2 class="time-slot" style="grid-row: time-1630;">16:30</h2>
+        <h2 class="time-slot" style="grid-row: time-1700;">17:00</h2>
+        <h2 class="time-slot" style="grid-row: time-1730;">17:30</h2>
+        <h2 class="time-slot" style="grid-row: time-1800;">18:00</h2>
+        <h2 class="time-slot" style="grid-row: time-1830;">18:30</h2>
+        <h2 class="time-slot" style="grid-row: time-1900;">19:00</h2>
+        <h2 class="time-slot" style="grid-row: time-1930;">19:30</h2>
+        <h2 class="time-slot" style="grid-row: time-2000;">20:00</h2>
+        <h2 class="time-slot" style="grid-row: time-2030;">20:30</h2>
+        <h2 class="time-slot" style="grid-row: time-2100;">21:00</h2>
+        <h2 class="time-slot" style="grid-row: time-2130;">21:30</h2>
+        <h2 class="time-slot" style="grid-row: time-2200;">22:00</h2>
+        <h2 class="time-slot" style="grid-row: time-2230;">22:30</h2>
+        <h2 class="time-slot" style="grid-row: time-2300;">23:00</h2>
+        <h2 class="time-slot" style="grid-row: time-2330;">23:30</h2>
+        <h2 class="time-slot" style="grid-row: time-2400;">24:00</h2>
 
-<script>
-    function openNav() {
-      document.getElementById("mySidebar").style.width = "400px";
-      {#document.getElementById("main").style.marginLeft = "250px";#}
-    }
+        <div class="eventspace">
 
-    function closeNav() {
-      document.getElementById("mySidebar").style.width = "0";
-      {#document.getElementById("main").style.marginLeft= "0";#}
-    }
-    const schedule = document.querySelector(".schedule");
-    let event = "";
-    var events = JSON.parse('{{ events|escapejs }}')
-    console.log(events[0]['event'])
-    for (var i=0; i < events.length; i++){
-        event += `<div id='${i}' class="session session-8 track-1" style="grid-column: track-1; grid-row: time-${events[i]['beginning']} / time-${events[i]['end']};">
+        </div>
+
+    </div>
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "400px";
+            {#document.getElementById("main").style.marginLeft = "250px";#}
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            {#document.getElementById("main").style.marginLeft= "0";#}
+        }
+        const schedule = document.querySelector(".schedule");
+        let event = "";
+        var events = JSON.parse('{{ events|escapejs }}')
+        console.log(events[0]['event'])
+        for (var i=0; i < events.length; i++){
+            event += `<div id='${i}' class="session session-8 track-1" style="grid-column: track-1; grid-row: time-${events[i]['beginning']} / time-${events[i]['end']};">
             <h3 class="session-title"><a onclick="sayHello(this)">${events[i]['event']}</a></h3>
             <span class="session-time">${~~(events[i]['beginning']/100)}:${('0'+events[i]['beginning']%100).slice(-2)} - ${~~(events[i]['end']/100)}:${('0'+events[i]['end']%100).slice(-2)}</span>
             <span class="session-presenter">${events[i]['description']}</span>
         </div>`;
 
-    }
-    schedule.insertAdjacentHTML('beforeend', event)
-function sayHello(label) {
-    var div_id = label.parentElement.parentElement.id
-    console.log(div_id)
-    document.getElementById('event').value = events[div_id]['event']
-    document.getElementById('begin_hr').value = ~~(events[div_id]['beginning']/100)
-    if (events[div_id]['beginning']%100 === 0){
-        document.getElementById('begin_min').value = '00'
-    }
-    else{
-        document.getElementById('begin_min').value = events[div_id]['beginning']%100
-    }
-    document.getElementById('end_hr').value = ~~(events[div_id]['end']/100)
-    if (events[div_id]['end']%100 === 0){
-        document.getElementById('end_min').value = '00'
-    }
-    else{
-        document.getElementById('end_min').value = events[div_id]['end']%100
-    }
-    document.getElementById('description').value = events[div_id]['description']
+        }
+        schedule.insertAdjacentHTML('beforeend', event)
+        function sayHello(label) {
+            var div_id = label.parentElement.parentElement.id
+            console.log(div_id)
+            document.getElementById('event').value = events[div_id]['event']
+            document.getElementById('begin_hr').value = ~~(events[div_id]['beginning']/100)
+            if (events[div_id]['beginning']%100 === 0){
+                document.getElementById('begin_min').value = '00'
+            }
+            else{
+                document.getElementById('begin_min').value = events[div_id]['beginning']%100
+            }
+            document.getElementById('end_hr').value = ~~(events[div_id]['end']/100)
+            if (events[div_id]['end']%100 === 0){
+                document.getElementById('end_min').value = '00'
+            }
+            else{
+                document.getElementById('end_min').value = events[div_id]['end']%100
+            }
+            document.getElementById('description').value = events[div_id]['description']
 
-}
-</script>
+        }
+    </script>
 {% endblock %}
