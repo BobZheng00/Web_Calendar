@@ -1,316 +1,15 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-    <style>
-        /*************************
-         * GRID SCHEDULE LAYOUT
-         *************************/
-        @media screen and (min-width:700px) {
-            .schedule {
-                display: grid;
-                grid-gap: 1em;
-                grid-template-rows:
-      [tracks] auto
-      [time-600] 1fr
-      [time-630] 1fr
-      [time-700] 1fr
-      [time-730] 1fr
-      [time-800] 1fr
-      [time-830] 1fr
-      [time-900] 1fr
-      [time-930] 1fr
-      [time-1000] 1fr
-      [time-1030] 1fr
-      [time-1100] 1fr
-      [time-1130] 1fr
-      [time-1200] 1fr
-      [time-1230] 1fr
-      [time-1300] 1fr
-      [time-1330] 1fr
-      [time-1400] 1fr
-      [time-1430] 1fr
-      [time-1500] 1fr
-      [time-1530] 1fr
-      [time-1600] 1fr
-      [time-1630] 1fr
-      [time-1700] 1fr
-      [time-1730] 1fr
-      [time-1800] 1fr
-      [time-1830] 1fr
-      [time-1900] 1fr
-      [time-1930] 1fr
-      [time-2000] 1fr
-      [time-2030] 1fr
-      [time-2100] 1fr
-      [time-2130] 1fr
-      [time-2200] 1fr
-      [time-2230] 1fr
-      [time-2300] 1fr
-      [time-2330] 1fr
-      [time-2400] 1fr;
 
-            ;
-                /* Note 1:
-                Use 24hr time for gridline names for simplicity
-
-                Note 2: Use "auto" instead of "1fr" for a more compact schedule where height of a slot is not proportional to the session length. Implementing a "compact" shortcode attribute might make sense for this!
-                Try 0.5fr for more compact equal rows. I don't quite understand how that works :)
-                */
-
-                grid-template-columns:
-      [times] 4em
-      [track-1-start] 3fr
-      [track-1-end track-2-start] 1fr
-      [track-2-end track-3-start] 1fr
-      [track-3-end track-4-start] 1fr
-      [track-4-end];
-            }
-        }
-
-        .time-slot {
-            grid-column: times;
-        }
-
-        .track-slot {
-            display: none; /* hidden on small screens and browsers without grid support */
-        }
-
-        @supports( display:grid ) {
-            @media screen and (min-width:700px) {
-                .track-slot {
-                    display: block;
-                    padding: 10px 5px 5px;
-                    position: sticky;
-                    top: 0;
-                    z-index: 1000;
-                    background-color: rgba(255,255,255,.9);
-                }
-            }
-        }
-
-        /* Small-screen & fallback styles */
-        .session {
-            margin-bottom:  1em;
-        }
-
-        @supports( display:grid ) {
-            @media screen and (min-width: 700px) {
-                .session {
-                    margin: 0;
-                }
-            }
-        }
-
-        /*************************
-         * VISUAL STYLES
-         * Design-y stuff ot particularly important to the demo
-         *************************/
-        body {
-            padding: 50px;
-            max-width: 1100px;
-            margin: 0 auto;
-            line-height: 1.5;
-        }
-
-        .session {
-            padding: .5em;
-            border-radius: 2px;
-            font-size: 14px;
-            box-shadow:
-                    rgba(255,255,255,.6) 1px 1px 0,
-                    rgba(0,0,0,.3) 4px 4px 0;
-        }
-
-        .session-title,
-        .session-time,
-        .session-track,
-        .session-presenter {
-            display: block;
-        }
-
-        .session-title,
-        .time-slot {
-            margin: 0;
-            font-size: 1em;
-        }
-
-        .session-title a {
-            color: #fff;
-            text-decoration-style: dotted;
-        }
-
-        .session-title a :hover {
-            font-style: italic;
-        }
-
-        .session-title a :focus {
-            outline: 2px dotted rgba(255,255,255,.8);
-        }
-
-
-        .track-slot,
-        .time-slot {
-            font-weight: bold;
-            font-size:.75em;
-        }
-
-        .track-1 {
-            background-color: #11be7c;
-            color: #fff;
-        }
-
-        .track-2 {
-            background-color: #687f00;
-            color: #fff;
-        }
-
-        .track-3 {
-            background-color: #544D69;
-            color: #fff;
-        }
-
-        .track-4 {
-            background-color: #c35500;
-            color: #fff;
-        }
-
-        .track-all {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #ccc;
-            color: #000;
-            box-shadow: none;
-        }
-
-        .text {
-            max-width: 750px;
-            font-size: 18px;
-            margin: 0 auto 50px;
-        }
-
-        .meta {
-            color: #555;
-            font-style: italic;
-        }
-
-        .meta a {
-            color: #555;
-        }
-
-        hr {
-            margin: 40px 0;
-        }
-
-        .sidebar {
-            margin: 0;
-            padding: 0;
-            width: 400px;
-            background-color: #f1f1f1;
-            position: fixed;
-            top: 54px;
-            right: 0px;
-            height: 100%;
-            overflow: auto;
-        }
-
-        /* Sidebar links */
-        .sidebar a {
-            display: block;
-            color: black;
-            padding: 16px;
-            text-decoration: none;
-        }
-
-        /* Active/current link */
-        .sidebar a.active {
-            height: 50px;
-            background-color: #04AA6D;
-            color: white;
-        }
-
-        /* Links on mouse-over */
-        .sidebar a:hover:not(.back) {
-            background-color: #555;
-            color: white;
-        }
-
-        .sidebar a:hover:not(.closebtn) {
-            background-color: #068658;
-            color: white;
-        }
-
-        .sidebar a.closebtn {
-            position: absolute;
-            top: 0;
-            padding-top: 0;
-            right: 0;
-            font-size: 36px;
-            margin-left: 50px;
-            height: 50px;
-        }
-
-        .sidebar a.back {
-            height: 50px;
-            background-color: #04AA6D;
-            color: white;
-        }
-
-        .sidebar form {
-            margin-left: 10px;
-        }
-
-        /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
-        div.content {
-            margin-left: 200px;
-            padding: 1px 16px;
-            height: 1000px;
-        }
-
-        /* On screens that are less than 700px wide, make the sidebar into a topbar */
-        @media screen and (max-width: 700px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            .sidebar a {float: left;}
-            div.content {margin-left: 0;}
-        }
-
-        /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
-        @media screen and (max-width: 400px) {
-            .sidebar a {
-                text-align: center;
-                float: none;
-            }
-        }
-
-        input[type='number']{
-            width: 80px;
-        }
-
-
-
-        .openbtn {
-            font-size: 20px;
-            cursor: pointer;
-            background-color: #111;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-        }
-
-        .openbtn:hover {
-            background-color: #444;
-        }
-
-        #main {
-            transition: margin-left .5s;
-            padding: 16px;
-        }
-    </style>
-
+    <div class="top-bar">
+        <div class="container" style="display: flex">
+            <h2>{{ date }} Schedule</h2>
+            <div class="openbtn-container">
+                <button class="openbtn" onclick="openNav()">☰ Open Editor</button>
+            </div>
+        </div>
+    </div>
     <div class="sidebar" id="mySidebar" style="{% if error_display %}width: 400px{% else %}width: 0{% endif %}">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
         <a class="back" href="/calendar">Back to Month</a>
@@ -321,6 +20,12 @@
             Begin At:<br>
             Hour:<select name="begin_hr" id="begin_hr">
             <option>  </option>
+            <option value="0"> 0 </option>
+            <option value="1"> 1 </option>
+            <option value="2"> 2 </option>
+            <option value="3"> 3 </option>
+            <option value="4"> 4 </option>
+            <option value="5"> 5 </option>
             <option value="6"> 6 </option>
             <option value="7"> 7 </option>
             <option value="8"> 8 </option>
@@ -348,6 +53,12 @@
             End At:<br>
             Hour:<select name="end_hr" id="end_hr">
             <option>  </option>
+            <option value="0"> 0 </option>
+            <option value="1"> 1 </option>
+            <option value="2"> 2 </option>
+            <option value="3"> 3 </option>
+            <option value="4"> 4 </option>
+            <option value="5"> 5 </option>
             <option value="6"> 6 </option>
             <option value="7"> 7 </option>
             <option value="8"> 8 </option>
@@ -366,7 +77,6 @@
             <option value="21"> 21 </option>
             <option value="22"> 22 </option>
             <option value="23"> 23 </option>
-            <option value="24"> 24 </option>
 
         </select>
             Minutes: <select name="end_min" id="end_min">
@@ -374,13 +84,14 @@
             <option value="00"> 00 </option>
             <option value="30"> 30 </option>
         </select><br><br>
-            Description: <input type="text" name="description" id="description"><br><br>
-            Repeat:<select name="repeat" id="repeat">
-            <option value="once">Once</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-        </select>
+            Description: <br><textarea name="description" id="description" rows="4" cols="50"></textarea><br><br>
+            Repeat:
+            <select name="repeat" id="repeat">
+                <option value="once">Once</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+            </select>
             Repeat End Date:<input type="date" name="repeat_end" id="repeat_end"><br><br>
 
             <button type="submit" name="create" value="Create Event">Create Event</button>
@@ -393,91 +104,7 @@
         {% endfor %}
     </div>
 
-    <div id="main">
-        <button class="openbtn" onclick="openNav()">☰ Open Sidebar</button>
-    </div>
-    <h2 id="schedule-heading">{{ date }} Schedule</h2>
     <div class="schedule" aria-labelledby="schedule-heading" id="table">
-
-        <!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-1; grid-row: tracks;">Track 1</span>-->
-        <!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-2; grid-row: tracks;">Track 2</span>-->
-        <!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-3; grid-row: tracks;">Track 3</span>-->
-        <!--  <span class="track-slot" aria-hidden="true" style="grid-column: track-4; grid-row: tracks;">Track 4</span>-->
-        <h2 class="time-slot" style="grid-row: time-600;">6:00</h2>
-        <h2 class="time-slot" style="grid-row: time-630;">6:30</h2>
-        <h2 class="time-slot" style="grid-row: time-700;">7:00</h2>
-        <h2 class="time-slot" style="grid-row: time-730;">7:30</h2>
-        <h2 class="time-slot" style="grid-row: time-800;">8:00</h2>
-
-        {#  <div class="session session-1 track-1" style="grid-column: track-1; grid-row: time-800 / time-830;">#}
-        {#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
-        {#    <span class="session-time">8:00 - 9:00</span>#}
-        {#    <span class="session-track">Track: 1</span>#}
-        {#    <span class="session-presenter">Presenter</span>#}
-        {#  </div>#}
-
-        <h2 class="time-slot" style="grid-row: time-830;">8:30</h2>
-
-
-        <h2 class="time-slot" style="grid-row: time-900;">9:00</h2>
-
-        {#  <div class="session session-6 track-1" style="grid-column: track-1; grid-row: time-1100 / time-1200;">#}
-        {#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
-        {#    <span class="session-time">9:00 - 10:00</span>#}
-        {#    <span class="session-track">Track: 1 & 2</span>#}
-        {#    <span class="session-presenter">Presenter</span>#}
-        {#  </div>#}
-        {##}
-        {#     <div class="session session-6 track-1" style="grid-column: track-1; grid-row: time-1100 / time-1200;">#}
-        {#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
-        {#    <span class="session-time">9:00 - 10:00</span>#}
-        {#    <span class="session-track">Track: 1 & 2</span>#}
-        {#    <span class="session-presenter">Presenter</span>#}
-        {#  </div>#}
-
-
-
-        <h2 class="time-slot" style="grid-row: time-930;">9:30</h2>
-
-        <h2 class="time-slot" style="grid-row: time-1000;">10:00</h2>
-
-
-        <h2 class="time-slot" style="grid-row: time-1030;">10:30</h2>
-
-        {#  <div class="session session-8 track-1" style="grid-column: track-1; grid-row: time-1030 / time-1130;">#}
-        {#    <h3 class="session-title"><a href="#">Talk Title</a></h3>#}
-        {#    <span class="session-time">10:30 - 11:30</span>#}
-        {#    <span class="session-track">Track: 1</span>#}
-        {#    <span class="session-presenter">Presenter</span>#}
-        {#  </div>#}
-
-        <h2 class="time-slot" style="grid-row: time-1100;">11:00</h2>
-        <h2 class="time-slot" style="grid-row: time-1130;">11:30</h2>
-        <h2 class="time-slot" style="grid-row: time-1200;">12:00</h2>
-        <h2 class="time-slot" style="grid-row: time-1230;">12:30</h2>
-        <h2 class="time-slot" style="grid-row: time-1300;">13:00</h2>
-        <h2 class="time-slot" style="grid-row: time-1330;">13:30</h2>
-        <h2 class="time-slot" style="grid-row: time-1400;">14:00</h2>
-        <h2 class="time-slot" style="grid-row: time-1430;">14:30</h2>
-        <h2 class="time-slot" style="grid-row: time-1500;">15:00</h2>
-        <h2 class="time-slot" style="grid-row: time-1530;">15:30</h2>
-        <h2 class="time-slot" style="grid-row: time-1600;">16:00</h2>
-        <h2 class="time-slot" style="grid-row: time-1630;">16:30</h2>
-        <h2 class="time-slot" style="grid-row: time-1700;">17:00</h2>
-        <h2 class="time-slot" style="grid-row: time-1730;">17:30</h2>
-        <h2 class="time-slot" style="grid-row: time-1800;">18:00</h2>
-        <h2 class="time-slot" style="grid-row: time-1830;">18:30</h2>
-        <h2 class="time-slot" style="grid-row: time-1900;">19:00</h2>
-        <h2 class="time-slot" style="grid-row: time-1930;">19:30</h2>
-        <h2 class="time-slot" style="grid-row: time-2000;">20:00</h2>
-        <h2 class="time-slot" style="grid-row: time-2030;">20:30</h2>
-        <h2 class="time-slot" style="grid-row: time-2100;">21:00</h2>
-        <h2 class="time-slot" style="grid-row: time-2130;">21:30</h2>
-        <h2 class="time-slot" style="grid-row: time-2200;">22:00</h2>
-        <h2 class="time-slot" style="grid-row: time-2230;">22:30</h2>
-        <h2 class="time-slot" style="grid-row: time-2300;">23:00</h2>
-        <h2 class="time-slot" style="grid-row: time-2330;">23:30</h2>
-        <h2 class="time-slot" style="grid-row: time-2400;">24:00</h2>
 
         <div class="eventspace">
 
@@ -485,7 +112,52 @@
 
     </div>
 
+
     <script>
+        function createTimeSlots() {
+            const scheduleElement = document.getElementById('table');
+            for (let hour = 0; hour <= 24; hour++) {
+                for (let minute = 0; minute < 60; minute += 30) {
+                    let formattedHour = hour.toString().padStart(2, '0');
+                    let formattedMinute = minute === 0 ? '00' : '30';
+                    let time;
+
+                    if (hour === 0 && minute === 0) {
+                        time = "0";
+                    } else if (hour === 0) {
+                        time = "30";
+                    } else {
+                        time = hour + formattedMinute;
+                    }
+
+                    let displayTime = `${formattedHour}:${formattedMinute}`;
+
+                    let timeSlot = document.createElement('h2');
+
+                    timeSlot.className = 'time-slot';
+                    timeSlot.style.gridRow = `time-${time}`;
+                    timeSlot.textContent = displayTime;
+
+                    if (minute === 30) {
+                        timeSlot.style.visibility = 'hidden';
+                    }
+
+                    let separator = document.createElement('div');
+                    separator.className = 'time-slot-separator';
+                    separator.style.gridRow = `time-${time}`;
+                    separator.style.gridColumn = 'track-1 / track-4';
+                    separator.style.zIndex = "1";
+
+                    if (hour === 24 && minute === 30) {
+                        separator.style.visibility = "hidden";
+                    }
+
+                    scheduleElement.appendChild(timeSlot);
+                    scheduleElement.appendChild(separator);
+                    }
+                }
+        }
+
         function openNav() {
             document.getElementById("mySidebar").style.width = "400px";
             {#document.getElementById("main").style.marginLeft = "250px";#}
@@ -495,39 +167,52 @@
             document.getElementById("mySidebar").style.width = "0";
             {#document.getElementById("main").style.marginLeft= "0";#}
         }
-        const schedule = document.querySelector(".schedule");
-        let event = "";
-        var events = JSON.parse('{{ events|escapejs }}')
-        console.log(events[0]['event'])
-        for (var i=0; i < events.length; i++){
-            event += `<div id='${i}' class="session session-8 track-1" style="grid-column: track-1; grid-row: time-${events[i]['beginning']} / time-${events[i]['end']};">
-            <h3 class="session-title"><a onclick="sayHello(this)">${events[i]['event']}</a></h3>
-            <span class="session-time">${~~(events[i]['beginning']/100)}:${('0'+events[i]['beginning']%100).slice(-2)} - ${~~(events[i]['end']/100)}:${('0'+events[i]['end']%100).slice(-2)}</span>
-            <span class="session-presenter">${events[i]['description']}</span>
-        </div>`;
 
-        }
-        schedule.insertAdjacentHTML('beforeend', event)
-        function sayHello(label) {
-            var div_id = label.parentElement.parentElement.id
-            console.log(div_id)
-            document.getElementById('event').value = events[div_id]['event']
-            document.getElementById('begin_hr').value = ~~(events[div_id]['beginning']/100)
+        function display_event(label) {
+            document.getElementById("mySidebar").style.width = "400px";
+            const div_id = label.parentElement.parentElement.id;
+
+            document.getElementById('event').value = events[div_id]['event'];
+            document.getElementById('begin_hr').value = ~~(events[div_id]['beginning']/100);
             if (events[div_id]['beginning']%100 === 0){
-                document.getElementById('begin_min').value = '00'
+                document.getElementById('begin_min').value = '00';
             }
             else{
-                document.getElementById('begin_min').value = events[div_id]['beginning']%100
+                document.getElementById('begin_min').value = events[div_id]['beginning']%100;
             }
-            document.getElementById('end_hr').value = ~~(events[div_id]['end']/100)
+            document.getElementById('end_hr').value = ~~(events[div_id]['end']/100);
             if (events[div_id]['end']%100 === 0){
-                document.getElementById('end_min').value = '00'
+                document.getElementById('end_min').value = '00';
             }
             else{
-                document.getElementById('end_min').value = events[div_id]['end']%100
+                document.getElementById('end_min').value = events[div_id]['end']%100;
             }
-            document.getElementById('description').value = events[div_id]['description']
+            document.getElementById('description').value = events[div_id]['description'];
 
         }
+
+        const schedule = document.querySelector(".schedule");
+        let cur_event = "";
+        const events = JSON.parse('{{ events|escapejs }}');
+        for (var i=0; i < events.length; i++){
+            const time_diff = ((Math.floor(events[i]['end'] / 100) * 60 + events[i]['end'] % 100) - (Math.floor(events[i]['beginning'] / 100) * 60 + events[i]['beginning'] % 100))/60
+            {#console.log(time_diff)#}
+
+            cur_event = `<div id='${i}' class="session session-8 track-1" style="grid-column: track-1; grid-row: span time-${events[i]['beginning']} / time-${events[i]['end']}; z-index: 2;">
+            <h3 class="session-title"><a onclick="display_event(this)">${events[i]['event']}</a></h3>
+            <span class="session-time">${~~(events[i]['beginning']/100)}:${('0'+events[i]['beginning']%100).slice(-2)} - ${~~(events[i]['end']/100)}:${('0'+events[i]['end']%100).slice(-2)}</span>
+            <span id='${i}description' class="session-presenter" >${events[i]['description']}</span>
+            </div>`;
+            schedule.insertAdjacentHTML('beforeend', cur_event);
+            if (time_diff === 0.5) {
+                document.getElementById(i.toString()+"description").style.height = "0";
+            } else {
+                document.getElementById(i.toString()+"description").style.minHeight = (time_diff*6-2).toString()+"em";
+            }
+
+        }
+
+        createTimeSlots();
+
     </script>
 {% endblock %}

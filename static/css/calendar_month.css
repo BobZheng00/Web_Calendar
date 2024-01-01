@@ -9,7 +9,8 @@ html {
   font-size: 62.5%;
 }
 
-.container_calender {
+.calendar-container {
+  margin-top: 4em;
   width: 100%;
   color: #eee;
   display: flex;
@@ -17,7 +18,7 @@ html {
   align-items: center;
 }
 
-.calendar {
+.month-calendar {
   width: 45rem;
   height: 52rem;
   background-color: #222227;
@@ -104,4 +105,10 @@ html {
 
 .today {
   background-color: #167e56;
+}
+
+.today:hover {
+  background-color: #1aa972;
+  border: 0.2rem solid #777;
+  cursor: pointer;
 }

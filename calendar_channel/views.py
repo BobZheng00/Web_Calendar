@@ -5,7 +5,9 @@ from dateutil.rrule import rrule, DAILY, WEEKLY, MONTHLY
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.handlers.wsgi import WSGIRequest
 from django.forms.models import model_to_dict
+from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
@@ -113,7 +115,8 @@ def calendar_month(request):
     return render(request, 'calendar.html')
 
 
-def create_repeated_events(user_id, event_info, start_date, end_date, repeat_rule):
+def create_repeated_events(user_id: int, event_info: dict[str, str],
+                           start_date: datetime.date, end_date: datetime.date, repeat_rule: int):
     for dt in rrule(repeat_rule, dtstart=start_date, until=end_date):
         UserEvents.objects.create(
             event=event_info["event"],
@@ -125,7 +128,8 @@ def create_repeated_events(user_id, event_info, start_date, end_date, repeat_rul
         )
 
 
-def handle_create_event(request, current_user, dt_obj, event_info) -> bool:
+def handle_create_event(request: WSGIRequest, current_user: User,
+                        dt_obj: datetime.date, event_info: dict[str, str]) -> bool:
     if event_info["repeat"] == 'once':
         UserEvents.objects.create(event=event_info["event"],
                                   date=dt_obj,
@@ -160,7 +164,8 @@ def handle_create_event(request, current_user, dt_obj, event_info) -> bool:
     return True
 
 
-def handle_delete_event(request, current_user, dt_obj, event_info) -> bool:
+def handle_delete_event(request: WSGIRequest, current_user: User,
+                        dt_obj: datetime.date, event_info: dict[str, str]) -> bool:
     if UserEvents.objects.filter(event=event_info["event"], date=dt_obj, beginning=event_info["begin_time"],
                                  end=event_info["end_time"],
                                  user_id_id=current_user.id, description=event_info["description"]).exists():
@@ -173,7 +178,7 @@ def handle_delete_event(request, current_user, dt_obj, event_info) -> bool:
     return True
 
 
-def handle_event(request, current_user, dt_obj) -> bool:
+def handle_event(request: WSGIRequest, current_user: User, dt_obj: datetime.date) -> bool:
     event = request.POST.get('event')
     begin_hr = request.POST.get('begin_hr')
     begin_min = request.POST.get('begin_min')
@@ -187,7 +192,7 @@ def handle_event(request, current_user, dt_obj) -> bool:
     begin_time = int(begin_hr) * 100 + int(begin_min)
     end_time = int(end_hr) * 100 + int(end_min)
     if begin_time >= end_time:
-        messages.info(request, 'End time is earlier than and equal to Begin time')
+        messages.info(request, 'End time is earlier than or equal to Begin time')
         return True
 
     event_info = {
@@ -199,7 +204,7 @@ def handle_event(request, current_user, dt_obj) -> bool:
         'repeat_end': request.POST.get('repeat_end')
     }
 
-    if request.POST.get("create"):
+    if request.POST.get("create"):  # TODO: event that ends at 0:00(24:00) cannot be handled
         return handle_create_event(request, current_user, dt_obj, event_info)
 
     if request.POST.get("delete"):
@@ -218,6 +223,8 @@ def calendar_day(request):
 
     if request.method == 'POST':
         error_display = handle_event(request, current_user, dt_obj)
+        if not error_display:
+            return redirect("/calendar/day")
 
     context = {}
     event_list = []

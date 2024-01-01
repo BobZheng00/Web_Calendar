@@ -1,137 +1,135 @@
-{% extends "base.html" %} 
- 
+{% extends "base.html" %}
+
 {% block main_content %}
-<div class="container">
- <div class="container_calender">
-   {% csrf_token %}
-      <div class="calendar">
-        <div class="month">
-          <i class="fas fa-angle-left prev"></i>
-          <div class="date">
-            <h1></h1>
-            <h3></h3>
-            <p></p>
-          </div>
-          <i class="fas fa-angle-right next"></i>
+        <div class="calendar-container">
+            {% csrf_token %}
+            <div class="month-calendar">
+                <div class="month">
+                    <i class="fas fa-angle-left prev"></i>
+                    <div class="date">
+                        <h1></h1>
+                        <h3></h3>
+                        <p></p>
+                    </div>
+                    <i class="fas fa-angle-right next"></i>
+                </div>
+                <div class="weekdays">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+                <div class="days"></div>
+            </div>
         </div>
-        <div class="weekdays">
-          <div>Sun</div>
-          <div>Mon</div>
-          <div>Tue</div>
-          <div>Wed</div>
-          <div>Thu</div>
-          <div>Fri</div>
-          <div>Sat</div>
-        </div>
-        <div class="days"></div>
-      </div>
-    </div>
-</div>
 
-<script>
-  const date = new Date();
+    <script>
+        const date = new Date();
 
-const renderCalendar = () => {
-  date.setDate(1);
+        const renderCalendar = () => {
+            date.setDate(1);
 
-  const monthDays = document.querySelector(".days");
+            const monthDays = document.querySelector(".days");
 
-  const lastDay = new Date(
-    date.getFullYear(),
-    date.getMonth() + 1,
-    0
-  ).getDate();
+            const lastDay = new Date(
+                date.getFullYear(),
+                date.getMonth() + 1,
+                0
+            ).getDate();
 
-  const prevLastDay = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    0
-  ).getDate();
+            const prevLastDay = new Date(
+                date.getFullYear(),
+                date.getMonth(),
+                0
+            ).getDate();
 
-  const firstDayIndex = date.getDay();
+            const firstDayIndex = date.getDay();
 
-  const lastDayIndex = new Date(
-    date.getFullYear(),
-    date.getMonth() + 1,
-    0
-  ).getDay();
+            const lastDayIndex = new Date(
+                date.getFullYear(),
+                date.getMonth() + 1,
+                0
+            ).getDay();
 
-  const nextDays = 7 - lastDayIndex - 1;
+            const nextDays = 7 - lastDayIndex - 1;
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  var year = parseInt(date.getFullYear());
+            const months = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December",
+            ];
+            var year = parseInt(date.getFullYear());
 
-  document.querySelector(".date h1").innerHTML = months[date.getMonth()];
-  document.getElementsByTagName('h1')[0].id = months[date.getMonth()];
-  document.querySelector(".date h3").innerHTML = year.toString();
-  document.getElementsByTagName('h3')[0].id = year.toString();
-  document.querySelector(".date p").innerHTML = new Date().toDateString();
+            document.querySelector(".date h1").innerHTML = months[date.getMonth()];
+            document.getElementsByTagName('h1')[0].id = months[date.getMonth()];
+            document.querySelector(".date h3").innerHTML = year.toString();
+            document.getElementsByTagName('h3')[0].id = year.toString();
+            document.querySelector(".date p").innerHTML = new Date().toDateString();
 
-  let days = "";
+            let days = "";
 
-  for (let x = firstDayIndex; x > 0; x--) {
-    days += `<div class="prev-date">${prevLastDay - x + 1}</div>`;
-  }
+            for (let x = firstDayIndex; x > 0; x--) {
+                days += `<div class="prev-date">${prevLastDay - x + 1}</div>`;
+            }
 
-  for (let i = 1; i <= lastDay; i++) {
-    if (
-      i === new Date().getDate() &&
-      date.getMonth() === new Date().getMonth() &&
-        date.getFullYear() === new Date().getFullYear()
-    ) {
-      days += `<div class="today" id='${i}' onclick="sayHello(this.id)">${i}</div>`;
-    } else {
-      days += `<div id='${i}' onclick="sayHello(this.id)">${i}</div>`;
-    }
-  }
+            for (let i = 1; i <= lastDay; i++) {
+                if (
+                    i === new Date().getDate() &&
+                    date.getMonth() === new Date().getMonth() &&
+                    date.getFullYear() === new Date().getFullYear()
+                ) {
+                    days += `<div class="today" id='${i}' onclick="sayHello(this.id)">${i}</div>`;
+                } else {
+                    days += `<div id='${i}' onclick="sayHello(this.id)">${i}</div>`;
+                }
+            }
 
-  for (let j = 1; j <= nextDays; j++) {
-    days += `<div class="next-date">${j}</div>`;
-  }
-  monthDays.innerHTML = days;
-};
+            for (let j = 1; j <= nextDays; j++) {
+                days += `<div class="next-date">${j}</div>`;
+            }
+            monthDays.innerHTML = days;
+        };
 
-document.querySelector(".prev").addEventListener("click", () => {
-  date.setMonth(date.getMonth() - 1);
-  renderCalendar();
-});
+        document.querySelector(".prev").addEventListener("click", () => {
+            date.setMonth(date.getMonth() - 1);
+            renderCalendar();
+        });
 
-document.querySelector(".next").addEventListener("click", () => {
-  if (date.getMonth() === 12){
-    year ++
-  }
-  date.setMonth(date.getMonth() + 1);
-  renderCalendar();
-});
+        document.querySelector(".next").addEventListener("click", () => {
+            if (date.getMonth() === 12){
+                year ++
+            }
+            date.setMonth(date.getMonth() + 1);
+            renderCalendar();
+        });
 
-renderCalendar();
+        renderCalendar();
 
-function sayHello(clicked_id) {
-  console.log(clicked_id);
-  $.ajax({
-    type: "POST",
-    url: '',
-    data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'year': document.getElementsByTagName('h3')[0].id, 'month': document.getElementsByTagName('h1')[0].id, 'day': clicked_id
-          },
-    success: function(url) {
-        console.log("prototype")
-        window.location.href = 'day/';
-    }
-});
-}
-</script>
+        function sayHello(clicked_id) {
+            console.log(clicked_id);
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'year': document.getElementsByTagName('h3')[0].id, 'month': document.getElementsByTagName('h1')[0].id, 'day': clicked_id
+                },
+                success: function(url) {
+                    console.log("prototype")
+                    window.location.href = 'day/';
+                }
+            });
+        }
+    </script>
 
 {% endblock %}
