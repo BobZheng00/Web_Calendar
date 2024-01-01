@@ -1,0 +1,319 @@
+@media screen and (min-width:700px) {
+    .schedule {
+        padding-top: 100px;
+        position: relative;
+        display: grid;
+        grid-gap: 0;
+        grid-template-rows:
+        [tracks] auto
+        [time-0] minmax(3em, auto)
+        [time-30] minmax(3em, auto)
+        [time-100] minmax(3em, auto)
+        [time-130] minmax(3em, auto)
+        [time-200] minmax(3em, auto)
+        [time-230] minmax(3em, auto)
+        [time-300] minmax(3em, auto)
+        [time-330] minmax(3em, auto)
+        [time-400] minmax(3em, auto)
+        [time-430] minmax(3em, auto)
+        [time-500] minmax(3em, auto)
+        [time-530] minmax(3em, auto)
+        [time-600] minmax(3em, auto)
+        [time-630] minmax(3em, auto)
+        [time-700] minmax(3em, auto)
+        [time-730] minmax(3em, auto)
+        [time-800] minmax(3em, auto)
+        [time-830] minmax(3em, auto)
+        [time-900] minmax(3em, auto)
+        [time-930] minmax(3em, auto)
+        [time-1000] minmax(3em, auto)
+        [time-1030] minmax(3em, auto)
+        [time-1100] minmax(3em, auto)
+        [time-1130] minmax(3em, auto)
+        [time-1200] minmax(3em, auto)
+        [time-1230] minmax(3em, auto)
+        [time-1300] minmax(3em, auto)
+        [time-1330] minmax(3em, auto)
+        [time-1400] minmax(3em, auto)
+        [time-1430] minmax(3em, auto)
+        [time-1500] minmax(3em, auto)
+        [time-1530] minmax(3em, auto)
+        [time-1600] minmax(3em, auto)
+        [time-1630] minmax(3em, auto)
+        [time-1700] minmax(3em, auto)
+        [time-1730] minmax(3em, auto)
+        [time-1800] minmax(3em, auto)
+        [time-1830] minmax(3em, auto)
+        [time-1900] minmax(3em, auto)
+        [time-1930] minmax(3em, auto)
+        [time-2000] minmax(3em, auto)
+        [time-2030] minmax(3em, auto)
+        [time-2100] minmax(3em, auto)
+        [time-2130] minmax(3em, auto)
+        [time-2200] minmax(3em, auto)
+        [time-2230] minmax(3em, auto)
+        [time-2300] minmax(3em, auto)
+        [time-2330] minmax(3em, auto)
+        [time-2400] minmax(3em, auto);
+        grid-template-columns:
+        [times] 4em
+        [track-1-start] 3fr
+        [track-1-end track-2-start] 1fr
+        [track-2-end track-3-start] 1fr
+        [track-3-end track-4-start] 1fr
+        [track-4-end];
+    }
+}
+
+.time-slot {
+    grid-column: times;
+}
+
+.track-slot {
+    display: none; /* hidden on small screens and browsers without grid support */
+}
+
+@supports( display:grid ) {
+    @media screen and (min-width:700px) {
+        .track-slot {
+            display: block;
+            padding: 10px 5px 5px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: rgba(255,255,255,.9);
+        }
+    }
+}
+
+@supports( display:grid ) {
+    @media screen and (min-width: 700px) {
+        .session {
+            margin: 0;
+        }
+    }
+}
+
+.session {
+    min-width: 100%;
+    max-width: 100%;
+    top: 7px;
+    margin-bottom: 4px;
+    position: relative;
+    padding: .5em;
+    border-radius: 2px;
+    font-size: 14px;
+    box-shadow:
+    rgba(255,255,255,.6) 1px 1px 0,
+    rgba(0,0,0,.3) 3px 3px 0;
+}
+
+.session-title,
+.session-time,
+.session-track,
+.session-presenter {
+    display: block;
+    max-height: 3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.session-title,
+.time-slot {
+    margin: 0;
+    font-size: 1em;
+}
+
+.session-title a {
+    color: #fff;
+    text-decoration-style: dotted;
+}
+
+.session-title a :hover {
+    font-style: italic;
+}
+
+.session-title a :focus {
+    outline: 2px dotted rgba(255,255,255,.8);
+}
+
+
+.track-slot,
+.time-slot {
+    font-weight: bold;
+    font-size:.75em;
+}
+
+.track-1 {
+    background-color: #11be7c;
+    color: #fff;
+}
+
+.track-2 {
+    background-color: #687f00;
+    color: #fff;
+}
+
+.track-3 {
+    background-color: #544D69;
+    color: #fff;
+}
+
+.track-4 {
+    background-color: #c35500;
+    color: #fff;
+}
+
+.track-all {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ccc;
+    color: #000;
+    box-shadow: none;
+}
+
+.text {
+    max-width: 750px;
+    font-size: 18px;
+    margin: 0 auto 50px;
+}
+
+.meta {
+    color: #555;
+    font-style: italic;
+}
+
+.meta a {
+    color: #555;
+}
+
+hr {
+    margin: 40px 0;
+}
+
+.sidebar {
+    z-index: 4;
+    margin: 0;
+    padding: 0;
+    width: 400px;
+    background-color: #f1f1f1;
+    position: fixed;
+    top: 54px;
+    right: 0;
+    height: 100%;
+    overflow: auto;
+}
+
+.sidebar a {
+    display: block;
+    color: black;
+    padding: 16px;
+    text-decoration: none;
+}
+
+.sidebar a.active {
+    height: 50px;
+    background-color: #04AA6D;
+    color: white;
+}
+
+.sidebar a:hover:not(.back) {
+    background-color: #555;
+    color: white;
+}
+
+.sidebar a:hover:not(.closebtn) {
+    background-color: #068658;
+    color: white;
+}
+
+.sidebar a.closebtn {
+    position: absolute;
+    top: 0;
+    padding-top: 0;
+    right: 0;
+    font-size: 36px;
+    margin-left: 50px;
+    height: 50px;
+}
+
+.sidebar a.back {
+    height: 50px;
+    background-color: #04AA6D;
+    color: white;
+}
+
+.sidebar form {
+    margin-left: 10px;
+}
+
+div.content {
+    margin-left: 200px;
+    padding: 1px 16px;
+    height: 1000px;
+}
+
+@media screen and (max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar a {float: left;}
+
+    div.content {margin-left: 0;}
+}
+
+@media screen and (max-width: 400px) {
+    .sidebar a {
+        text-align: center;
+        float: none;
+    }
+}
+
+input[type='number']{
+    width: 80px;
+}
+
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+}
+
+.openbtn:hover {
+    background-color: #444;
+}
+
+.top-bar {
+    left: 0;
+    top: 50px;
+    width: 100%;
+    z-index: 3;
+    background-color: white;
+    position: fixed;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.openbtn-container {
+    transition: margin-left .5s;
+    padding: 7px;
+    margin-left: auto;
+}
+
+.time-slot-separator {
+    top: 7px;
+    z-index: 9;
+    height: 0.5px; /* Line thickness */
+    background-color: #ccc; /* Line color */
+    width: 100%; /* Full width of the container */
+    position: absolute;
+}
+
