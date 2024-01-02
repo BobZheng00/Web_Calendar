@@ -124,7 +124,7 @@
                 url: '',
                 data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'year': document.getElementsByTagName('h3')[0].id, 'month': document.getElementsByTagName('h1')[0].id, 'day': clicked_id
                 },
-                success: function(url) {
+                success: function(response) {
                     console.log("prototype")
                     window.location.href = 'day/';
                 }

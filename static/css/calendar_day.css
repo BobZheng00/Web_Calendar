@@ -317,3 +317,8 @@ input[type='number']{
     position: absolute;
 }
 
+.top-bar #next:hover,#prev:hover {
+    color: #20b27c;
+    font-weight: bolder;
+}
+

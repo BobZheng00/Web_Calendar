@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
 from django.forms.models import model_to_dict
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
@@ -216,12 +216,16 @@ def handle_event(request: WSGIRequest, current_user: User, dt_obj: datetime.date
 @csrf_exempt
 def calendar_day(request):
     current_user = request.user
+    error_display = False
     date = request.session['date']
     month_number = datetime.datetime.strptime(date['month'][0:3], '%b').month
     dt_obj = datetime.date(int(date['year']), month_number, int(date['day']))
-    error_display = False
 
-    if request.method == 'POST':
+    if request.method == 'POST' and request.POST.get("change"):
+        dt_obj = datetime.date(int(request.POST.get('year')),
+                               int(request.POST.get('month')),
+                               int(request.POST.get('day')))
+    elif request.method == 'POST':
         error_display = handle_event(request, current_user, dt_obj)
         if not error_display:
             return redirect("/calendar/day")
