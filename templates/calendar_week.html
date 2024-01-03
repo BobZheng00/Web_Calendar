@@ -5,21 +5,23 @@
 
     <div class="top-bar">
         <div class="container" style="display: flex">
-            <h2 id="prev" onclick="prevDay('{{ date }}')"><<</h2>
+            <h2 id="prev" onclick="prevWeek('{{ date }}')"><<</h2>
             <h2 id="date-label">{{ date }} Schedule</h2>
-            <h2 id="next" onclick="nextDay('{{ date }}')">>></h2>
+            <h2 id="next" onclick="nextWeek('{{ date }}')">>></h2>
             <div class="openbtn-container">
                 <button class="openbtn" onclick="openNav()">☰ Open Editor</button>
             </div>
         </div>
     </div>
+
     <div class="sidebar" id="mySidebar" style="{% if error_display %}width: 400px{% else %}width: 0{% endif %}">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-        <a class="back" href="/calendar/week">Back to Week</a>
+        <a class="back" href="/calendar">Back to Month</a>
         <br>
         <form action="" method="post" id="form">
             {% csrf_token %}
             Event Name:<input type="text" name="event" id="event"><br><br>
+            Date:<input type="date" name="date" id="start_date"><br><br>
             Begin At:<br>
             Hour:<select name="begin_hr" id="begin_hr">
             <option>  </option>
@@ -106,14 +108,13 @@
             <p id="messages">{{ message }}</p>
         {% endfor %}
     </div>
-
-    <div class="schedule" aria-labelledby="schedule-heading" id="table"></div>
+    <div class="week-schedule" aria-labelledby="schedule-heading" id="table"></div>
 
     <script src="{% static 'js/calendar_day.js' %}"></script>
-
+    <script src="{% static 'js/calendar_week.js' %}"></script>
     <script>
         const events = JSON.parse('{{ events|escapejs }}');
-        loadDailySessions(events);
+        loadWeeklySessions(events, '{{ date|escapejs }}');
     </script>
 
 {% endblock %}

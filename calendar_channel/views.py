@@ -222,9 +222,7 @@ def calendar_day(request):
     dt_obj = datetime.date(int(date['year']), month_number, int(date['day']))
 
     if request.method == 'POST' and request.POST.get("change"):
-        dt_obj = datetime.date(int(request.POST.get('year')),
-                               int(request.POST.get('month')),
-                               int(request.POST.get('day')))
+        dt_obj = reload_date(request)
     elif request.method == 'POST':
         error_display = handle_event(request, current_user, dt_obj)
         if not error_display:
@@ -243,3 +241,54 @@ def calendar_day(request):
 
     print(event_js)
     return render(request, 'calendar_day.html', context)
+
+
+def calendar_week(request):
+    current_user = request.user
+    error_display = False
+    date = request.session['date']
+    month_number = datetime.datetime.strptime(date['month'][0:3], '%b').month
+    dt_obj = datetime.date(int(date['year']), month_number, int(date['day']))
+    dt_obj = dt_obj - datetime.timedelta(days=dt_obj.weekday())  # dt_obj will always be a Sunday
+
+    if request.method == 'POST' and request.POST.get("change"):
+        dt_obj = reload_date(request)
+    elif request.method == 'POST' and request.POST.get('switch_day'):
+        reload_date(request)
+        return redirect("/calendar/day")
+    elif request.method == 'POST':
+        if request.POST.get('date'):
+            target_date = datetime.datetime.strptime(request.POST.get('date'), "%Y-%m-%d").date()
+            error_display = handle_event(request, current_user, target_date)
+        else:
+            error_display = True
+            messages.info(request, 'Date is missing')
+
+        if not error_display:
+            return redirect("/calendar/week")
+
+    context = {}
+    event_list = {}
+
+    for i in range(7):
+        event_query = UserEvents.objects.filter(user_id=current_user.id, date=dt_obj + datetime.timedelta(days=i))
+        event_list[str(i)] = []
+        for event in event_query:
+            event_list[str(i)].append(model_to_dict(event))
+
+    event_js = json.dumps(event_list, default=str)
+    context['events'] = event_js
+    context['date'] = str(dt_obj)
+    context['error_display'] = error_display
+    print(event_js)
+
+    return render(request, 'calendar_week.html', context)
+
+
+def reload_date(request):
+    request.session['date'] = {'year': request.POST['year'],
+                               'month': request.POST['month'],
+                               'day': request.POST['day']}
+    return datetime.date(int(request.POST.get('year')),
+                         datetime.datetime.strptime(request.POST.get('month')[0:3], '%b').month,
+                         int(request.POST.get('day')))

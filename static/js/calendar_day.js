@@ -29,7 +29,7 @@ function createTimeSlots() {
             let separator = document.createElement('div');
             separator.className = 'time-slot-separator';
             separator.style.gridRow = `time-${time}`;
-            separator.style.gridColumn = 'track-1 / track-4';
+            separator.style.gridColumn = 'track-1 / track-10';
             separator.style.zIndex = "1";
 
             if (hour === 24 && minute === 30) {
@@ -84,7 +84,7 @@ function prevDay(dateString) {
 }
 
 
-function loadSessions(events) {
+function loadDailySessions(events) {
     const schedule = document.querySelector(".schedule");
     let cur_event = "";
     for (let i = 0; i < events.length; i++) {
@@ -108,8 +108,8 @@ function loadSessions(events) {
 }
 
 function changeDay(dateString, change) {
-    let dataParts = dateString.split('-')
-    let dateObj = new Date(dataParts[0], dataParts[1] - 1, dataParts[2]);
+    let dateParts = dateString.split('-')
+    let dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
     dateObj.setDate(dateObj.getDate() + change);
 
     const form = document.createElement('form');
@@ -124,7 +124,7 @@ function changeDay(dateString, change) {
     const monthInput = document.createElement('input');
     monthInput.type = 'hidden';
     monthInput.name = 'month';
-    monthInput.value = (dateObj.getMonth() + 1).toString();
+    monthInput.value = dateObj.toLocaleString('en-US', { month: 'short' });
 
     const dayInput = document.createElement('input');
     dayInput.type = 'hidden';
@@ -149,4 +149,9 @@ function changeDay(dateString, change) {
     form.appendChild(csrfInput);
     document.body.appendChild(form);
     form.submit();
+}
+
+
+function dateObjToString(dateObj) {
+    return dateObj.getFullYear().toString() + "-" + (dateObj.getMonth() + 1).toString() + "-" + dateObj.getDate().toString();
 }
