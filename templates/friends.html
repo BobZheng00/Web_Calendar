@@ -60,7 +60,7 @@
     <table class="styled-table" id="followed-table">
         <tr><th>Followed</th><th>View Calendar</th></tr>
         {% for key, value in followed_list.items %}
-            <tr><th>{{ key }}</th><th><button class="view-button" type="button" id="{{ key }}" onclick="" disabled></button></th></tr>
+            <tr><th>{{ key }}</th><th><button class="view-button" type="button" id="{{ key }}" onclick="accessFriendCalendar(this)" disabled></button></th></tr>
         {% endfor %}
     </table>
 

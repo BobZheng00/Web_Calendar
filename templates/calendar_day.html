@@ -5,17 +5,30 @@
 
     <div class="top-bar">
         <div class="container" style="display: flex">
+            {% if error_display != 'no_need' %}
             <h2 id="prev" onclick="prevDay('{{ date }}')"><<</h2>
             <h2 id="date-label">{{ date }} Schedule</h2>
             <h2 id="next" onclick="nextDay('{{ date }}')">>></h2>
             <div class="openbtn-container">
                 <button class="openbtn" onclick="openNav()">☰ Open Editor</button>
             </div>
+            {% else %}
+                <h2 id="prev" onclick="prevDay('{{ date }}')"><<</h2>
+                <h2 id="date-label">{{ friend_username }}'s {{ date }} Schedule</h2>
+                <h2 id="next" onclick="nextDay('{{ date }}')">>></h2>
+                <div class="openbtn-container">
+                    <button class="openbtn" onclick="openNav()">☰ Open Viewer</button>
+                </div>
+            {% endif %}
         </div>
     </div>
     <div class="sidebar" id="mySidebar" style="{% if error_display %}width: 400px{% else %}width: 0{% endif %}">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        {% if error_display != "no_need" %}
         <a class="back" href="/calendar/week">Back to Week</a>
+        {% else %}
+        <a class="back" href="/{{ friend_username }}/calendar/week">Back to Week</a>
+        {% endif %}
         <br>
         <form action="" method="post" id="form">
             {% csrf_token %}
@@ -88,6 +101,7 @@
             <option value="30"> 30 </option>
         </select><br><br>
             Description: <br><textarea name="description" id="description" rows="4" cols="50"></textarea><br><br>
+            {% if error_display != "no_need" %}
             Repeat:
             <select name="repeat" id="repeat">
                 <option value="once">Once</option>
@@ -101,6 +115,7 @@
 
             <button type="submit" name="delete" value="Delete Event">Delete Event</button>
             <br><br>
+            {% endif %}
         </form>
         {% for message in messages %}
             <p id="messages">{{ message }}</p>

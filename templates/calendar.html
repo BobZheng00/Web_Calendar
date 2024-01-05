@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block main_content %}
+    {% if friend_username != 'default' %}
+         <h3>You are viewing {{ friend_username }}'s calendar</h3><hr>
+    {% endif %}
         <div class="calendar-container">
             {% csrf_token %}
             <div class="month-calendar">

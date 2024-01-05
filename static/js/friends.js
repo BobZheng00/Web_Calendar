@@ -49,6 +49,24 @@ function switchAccessibility(label) {
     });
 }
 
+function accessFriendCalendar(button) {
+    console.log(button.id)
+    $.ajax({
+        synch: 'true',
+        url:'/' + button.id + '/calendar/',
+        type: "GET",
+        data: {access_calendar: button.id},
+        success: function () {
+            window.location.href = '/' + button.id + '/calendar/'
+        },
+        failure: function () {
+            alert("failure");
+        }
+    });
+
+}
+
+
 function loadFriendList(followerList, followedList) {
     let checkboxes = document.querySelectorAll('.switch input[type="checkbox"]');
     let viewButtons = document.querySelectorAll('.view-button');

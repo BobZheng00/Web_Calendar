@@ -9,7 +9,6 @@ function prevWeek(dateString) {
 
 
 function loadWeeklySessions(events, dateString) {
-    document.getElementById('date-label').textContent = `${dateString.slice(0, -3)} Schedule`;
     const schedule = document.querySelector(".week-schedule");
     let dataParts = dateString.split('-');
     for (let [key, value] of Object.entries(events)) {
@@ -63,14 +62,14 @@ function enterDayView(dateTrack) {
     let dateParts = dateTrack.textContent.split('-');
     let dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
     $.ajax({
-                type: "POST",
-                url: '',
-                data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'year': dateObj.getFullYear().toString(),
-                    'month': dateObj.toLocaleString('en-US', { month: 'short' }),
-                    'day': dateObj.getDate().toString(), 'switch_day': true
-                },
-                success: function(response) {
-                    window.location.href = '/calendar/day/';
-                }
-            });
+            type: "POST",
+            url: '',
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'year': dateObj.getFullYear().toString(),
+                'month': dateObj.toLocaleString('en-US', { month: 'short' }),
+                'day': dateObj.getDate().toString(), 'switch_day': true
+            },
+            success: function(response) {
+                window.location.href = response['redirect'];
+            }
+        });
 }

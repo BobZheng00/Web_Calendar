@@ -95,7 +95,9 @@ def friends_view(request):
     friends["followed_list_json"] = json.dumps(friends["followed_list"], default=str)
 
     if is_ajax(request=request):
-        if "requester" in request.GET:
+        if request.POST.get('access_calendar'):
+            return JsonResponse({'redirect': ''})
+        elif "requester" in request.GET:
             requester_id = User.objects.filter(username=request.GET['requester']).get().id
             Follower.objects.filter(receiver_id=current_user.id, requester_id=requester_id).update(is_agreed=True)
         elif "requester_decline" in request.GET:
@@ -129,7 +131,7 @@ def calendar_month(request):
         day = request.POST['day']
         request.session['date'] = {'year': year, 'month': month, 'day': day}
         print(year, month, day)
-    return render(request, 'calendar.html')
+    return render(request, 'calendar.html', {"friend_username": 'default'})
 
 
 def create_repeated_events(user_id: int, event_info: dict[str, str],
@@ -272,7 +274,7 @@ def calendar_week(request):
         dt_obj = reload_date(request)
     elif request.method == 'POST' and request.POST.get('switch_day'):
         reload_date(request)
-        return redirect("/calendar/day")
+        return JsonResponse({'redirect': '/calendar/day'})
     elif request.method == 'POST':
         if request.POST.get('date'):
             target_date = datetime.datetime.strptime(request.POST.get('date'), "%Y-%m-%d").date()
@@ -302,10 +304,76 @@ def calendar_week(request):
     return render(request, 'calendar_week.html', context)
 
 
-def reload_date(request):
-    request.session['date'] = {'year': request.POST['year'],
+def reload_date(request, session_name = 'date'):
+    request.session[session_name] = {'year': request.POST['year'],
                                'month': request.POST['month'],
                                'day': request.POST['day']}
     return datetime.date(int(request.POST.get('year')),
                          datetime.datetime.strptime(request.POST.get('month')[0:3], '%b').month,
                          int(request.POST.get('day')))
+
+
+def friend_calendar(request, username: str):
+    if request.method == 'POST':
+        year = request.POST['year']
+        month = request.POST['month']
+        day = request.POST['day']
+        request.session['friend_date'] = {'username': username, 'year': year, 'month': month, 'day': day}
+        print(year, month, day)
+    return render(request, 'calendar.html', {"friend_username": username})
+
+
+def friend_calendar_week(request, username: str):
+    friend_id = User.objects.filter(username=username).get().id
+    date = request.session['friend_date']
+    month_number = datetime.datetime.strptime(date['month'][0:3], '%b').month
+    dt_obj = datetime.date(int(date['year']), month_number, int(date['day']))
+    dt_obj = dt_obj - datetime.timedelta(days=dt_obj.weekday())  # dt_obj will always be a Sunday
+
+    if request.method == 'POST' and request.POST.get("change"):
+        dt_obj = reload_date(request, 'friend_date')
+    elif request.method == 'POST' and request.POST.get('switch_day'):
+        reload_date(request, 'friend_date')
+        return JsonResponse({'redirect': '/' + username + '/calendar/day'})
+
+    context = {}
+    event_list = {}
+
+    for i in range(7):
+        event_query = UserEvents.objects.filter(user_id=friend_id, date=dt_obj + datetime.timedelta(days=i))
+        event_list[str(i)] = []
+        for event in event_query:
+            event_list[str(i)].append(model_to_dict(event))
+
+    event_js = json.dumps(event_list, default=str)
+    context['friend_username'] = username
+    context['events'] = event_js
+    context['date'] = str(dt_obj)
+    context['error_display'] = 'no_need'
+    print(event_js)
+    return render(request, 'calendar_week.html', context)
+
+
+def friend_calendar_day(request, username: str):
+    friend_id = User.objects.filter(username=username).get().id
+    date = request.session['friend_date']
+    month_number = datetime.datetime.strptime(date['month'][0:3], '%b').month
+    dt_obj = datetime.date(int(date['year']), month_number, int(date['day']))
+
+    if request.method == 'POST' and request.POST.get("change"):
+        dt_obj = reload_date(request, "friend_date")
+
+    context = {}
+    event_list = []
+
+    event_query = UserEvents.objects.filter(user_id=friend_id, date=dt_obj)
+    for event in event_query:
+        event_list.append(model_to_dict(event))
+    event_js = json.dumps(event_list, default=str)
+    context['friend_username'] = username
+    context['events'] = event_js
+    context['date'] = str(dt_obj)
+    context['error_display'] = "no_need"
+
+    print(event_js)
+    return render(request, 'calendar_day.html', context)
