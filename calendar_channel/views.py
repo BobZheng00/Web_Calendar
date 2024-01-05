@@ -75,19 +75,36 @@ def friends_view(request):
     current_user = request.user
     friends = {'followed': Follower.objects.filter(requester_id=current_user.id, is_agreed=True).count(),
                'follower': Follower.objects.filter(receiver_id=current_user.id, is_agreed=True).count(),
+               'followed_list': {},
+               'follower_list': {},
                'requesting': []}
+
+    for followed in Follower.objects.filter(requester_id=current_user.id, is_agreed=True).values():
+        for single_followed in User.objects.filter(id=followed["receiver_id"]).values():
+            friends['followed_list'][single_followed["username"]] = followed['allowed_access']
+
+    for follower in Follower.objects.filter(receiver_id=current_user.id, is_agreed=True).values():
+        for single_follower in User.objects.filter(id=follower["requester_id"]).values():
+            friends['follower_list'][single_follower["username"]] = follower['allowed_access']
 
     for requesting in Follower.objects.filter(receiver_id=current_user.id, is_agreed=False).values():
         for single_request in User.objects.filter(id=requesting["requester_id"]).values():
             friends['requesting'].append(single_request["username"])
 
+    friends["follower_list_json"] = json.dumps(friends["follower_list"], default=str)
+    friends["followed_list_json"] = json.dumps(friends["followed_list"], default=str)
+
     if is_ajax(request=request):
         if "requester" in request.GET:
             requester_id = User.objects.filter(username=request.GET['requester']).get().id
             Follower.objects.filter(receiver_id=current_user.id, requester_id=requester_id).update(is_agreed=True)
-        else:
+        elif "requester_decline" in request.GET:
             requester_id = User.objects.filter(username=request.GET['requester_decline']).get().id
             Follower.objects.filter(receiver_id=current_user.id, requester_id=requester_id).delete()
+        elif "change_accessibility" in request.GET:
+            follower_id = User.objects.filter(username=request.GET['follower']).get().id
+            Follower.objects.filter(receiver_id=current_user.id, requester_id=follower_id).update(
+                allowed_access=(request.GET['change_accessibility'] == 'true'))
 
     elif request.method == 'POST' and request.POST['action'] == "Sent Request":
         username = request.POST.get('username')
@@ -100,7 +117,7 @@ def friends_view(request):
         else:
             Follower.objects.create(requester_id=request.user.id,
                                     receiver_id=User.objects.get(username=username).id)
-
+    print(friends)
     return render(request, 'friends.html', friends)
 
 

@@ -11,6 +11,7 @@ class UserEvents(models.Model):
     beginning = models.IntegerField(default=0)
     end = models.IntegerField(default=0)
     description = models.TextField(default='')
+    is_private = models.BooleanField(default=False)
 
 
 class Follower(models.Model):

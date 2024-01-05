@@ -70,7 +70,7 @@
                 "November",
                 "December",
             ];
-            var year = parseInt(date.getFullYear());
+            const year = parseInt(date.getFullYear().toString());
 
             document.querySelector(".date h1").innerHTML = months[date.getMonth()];
             document.getElementsByTagName('h1')[0].id = months[date.getMonth()];

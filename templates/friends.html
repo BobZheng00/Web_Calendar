@@ -1,5 +1,6 @@
 {% extends "base.html" %} 
- 
+{% load static %}
+
 {% block main_content %}
 <div class="row">
 
@@ -49,50 +50,36 @@
 		</div>
 	</div>
 <div class="container" style="text-align: center; margin-left: 355px">
-        <table class="styled-table">
-            <tr><th>Username</th><th>Accept</th><th>Decline</th></tr>
-            {% for request in requesting %}
-                <tr><th>{{ request }}</th><th><button type="button" id="{{ request }}" onclick="clicked_yes(this)">Yes</button></th><th><button type="button" id="{{ request }}" onclick="clicked_no(this)">No</button></th></tr>
-            {% endfor %}
-        </table>
-    </div>
+    <table class="styled-table" id="request-table">
+        <tr><th>Username</th><th>Accept</th><th>Decline</th></tr>
+        {% for request in requesting %}
+            <tr><th>{{ request }}</th><th><button type="button" id="{{ request }}" onclick="clicked_yes(this)">Yes</button></th><th><button type="button" id="{{ request }}" onclick="clicked_no(this)">No</button></th></tr>
+        {% endfor %}
+    </table>
+
+    <table class="styled-table" id="followed-table">
+        <tr><th>Followed</th><th>View Calendar</th></tr>
+        {% for key, value in followed_list.items %}
+            <tr><th>{{ key }}</th><th><button class="view-button" type="button" id="{{ key }}" onclick="" disabled></button></th></tr>
+        {% endfor %}
+    </table>
+
+    <table class="styled-table" id="follower-table">
+        <tr><th>Follower</th><th>Accessibility</th></tr>
+        {% for key, value in follower_list.items %}
+            <tr><th>{{ key }}</th><th><label class="switch"><input id="{{ key }}" type="checkbox" checked onchange="switchAccessibility(this)"><span class="slider round"></span></label></th></tr>
+        {% endfor %}
+    </table>
+
+</div>
 
 
 
+<script src="{% static 'js/friends.js' %}"></script>
 <script>
-    function clicked_yes(e){
-        console.log(e.id)
-        $.ajax({
-            synch: 'true',
-    url:'/friends',
-    type: "GET",
-    data: {requester: e.id},
-   success: function () {
-            alert("successful")
-            window.location.reload()
-        },
-    failure: function () {
-            alert("failure");
-        }
-});
-    }
-
-    function clicked_no(e){
-        console.log(e.id)
-        $.ajax({
-            synch: 'true',
-            url:'/friends',
-            type: "GET",
-            data: {requester_decline: e.id},
-   success: function () {
-            alert("successful")
-            window.location.reload()
-        },
-    failure: function () {
-            alert("failure");
-        }
-});
-    }
+    const followerList = JSON.parse('{{ follower_list_json|escapejs }}')
+    const followedList = JSON.parse('{{ followed_list_json|escapejs }}')
+    loadFriendList(followerList, followedList)
 </script>
 
 {% endblock %}
