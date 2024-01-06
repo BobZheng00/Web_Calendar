@@ -28,11 +28,6 @@ def home(request):
 
 
 @csrf_exempt
-def testing(request):
-    return render(request, "test.html")
-
-
-@csrf_exempt
 def register_page(request):
     form = CreateUserForm()
 

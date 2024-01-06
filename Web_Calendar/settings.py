@@ -10,8 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+
+from dotenv import load_dotenv
+import dj_database_url
+
 from pathlib import Path
 import os
+
+# load .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,13 +28,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-oy4fgmm9#$c!aewt00fyi^2_la=l4xvil=@8+d4hn62%lxas0@'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'web-calendar.fly.dev']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.ngrok-free.app/',
+    'https://web-calendar.fly.dev/',
+]
 
 # Application definition
 
@@ -38,11 +49,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'whitenoise.runserver_nostatic',
     'calendar_channel.apps.CalendarConfig'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -76,14 +89,18 @@ WSGI_APPLICATION = 'Web_Calendar.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'WebCalendar',
-        'USER': 'postgres',
-        'PASSWORD': 'Zsy!720521',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    # used for local postgresql database and development
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'WebCalendar',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'Zsy!720521',
+    #     'HOST': 'localhost',
+    #     'PORT': '5432',
+    # }
+
+    # used for fly.io database and production
+    'default': dj_database_url.config(default='sqlite:///' + os.path.join('db.sqlite3'))
 }
 
 
@@ -121,17 +138,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
-# STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.ngrok-free.app/'
-]
+
