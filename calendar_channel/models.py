@@ -12,6 +12,7 @@ class UserEvents(models.Model):
     end = models.IntegerField(default=0)
     description = models.TextField(default='')
     is_private = models.BooleanField(default=False)
+    hex_color = models.CharField(max_length=7, default='#000000')
 
 
 class Follower(models.Model):

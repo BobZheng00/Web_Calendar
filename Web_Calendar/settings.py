@@ -36,8 +36,8 @@ DEBUG = os.environ.get('DEBUG')
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'web-calendar.fly.dev']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.ngrok-free.app/',
-    'https://web-calendar.fly.dev/',
+    'https://*.ngrok-free.app',
+    'https://web-calendar.fly.dev',
 ]
 
 # Application definition
