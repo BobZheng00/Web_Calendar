@@ -90,17 +90,17 @@ WSGI_APPLICATION = 'Web_Calendar.wsgi.application'
 
 DATABASES = {
     # used for local postgresql database and development
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'WebCalendar',
-    #     'USER': 'postgres',
-    #     'PASSWORD': 'Zsy!720521',
-    #     'HOST': 'localhost',
-    #     'PORT': '5432',
-    # }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'WebCalendar',
+        'USER': 'postgres',
+        'PASSWORD': 'Zsy!720521',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 
     # used for fly.io database and production
-    'default': dj_database_url.config(default='sqlite:///' + os.path.join('db.sqlite3'))
+    # 'default': dj_database_url.config(default='sqlite:///' + os.path.join('db.sqlite3'))
 }
 
 
