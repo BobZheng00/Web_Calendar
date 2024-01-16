@@ -84,4 +84,18 @@ function loadFriendList(followerList, followedList) {
             button.disabled = true;
         }
     });
+
+    document.getElementById('followed-table').style.display = 'none';
+    document.getElementById('follower-table').style.display = 'none';
+}
+
+function switchFollowedVisibility() {
+    let table = document.getElementById('followed-table');
+    table.style.display = table.style.display === 'none' ? 'table' : 'none';
+
+}
+
+function switchFollowerVisibility() {
+    let table = document.getElementById('follower-table');
+    table.style.display = table.style.display === 'none' ? 'table' : 'none';
 }
