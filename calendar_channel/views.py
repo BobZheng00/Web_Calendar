@@ -11,6 +11,7 @@ from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
+from .events import InputEvents
 from .forms import CreateUserForm
 from .models import UserEvents, Follower
 
@@ -129,117 +130,42 @@ def calendar_month(request):
     return render(request, 'calendar.html', {"friend_username": 'default'})
 
 
-def create_repeated_events(user_id: int, event_info: dict[str, str],
-                           start_date: datetime.date, end_date: datetime.date, repeat_rule: int):
-    for dt in rrule(repeat_rule, dtstart=start_date, until=end_date):
-        UserEvents.objects.create(
-            event=event_info["event"],
-            date=dt.date(),
-            beginning=event_info["begin_time"],
-            end=event_info["end_time"],
-            user_id_id=user_id,
-            description=event_info["description"]
-        )
-
-
-def handle_create_event(request: WSGIRequest, current_user: User,
-                        dt_obj: datetime.date, event_info: dict[str, str]) -> bool:
-    if event_info["repeat"] == 'once':
-        UserEvents.objects.create(event=event_info["event"],
-                                  date=dt_obj,
-                                  beginning=event_info["begin_time"],
-                                  end=event_info["end_time"],
-                                  user_id_id=current_user.id,
-                                  description=event_info["description"])
-        return False
-
-    if event_info["repeat_end"] == '':
-        messages.info(request, 'End date is blank')
-        return True
-
-    repeat_end = datetime.datetime.strptime(event_info["repeat_end"], "%Y-%m-%d").date()
-
-    if repeat_end < dt_obj:
-        messages.info(request, 'End date is earlier than Current date')
-        return True
-
-    repeat_rules = {
-        'daily': DAILY,
-        'weekly': WEEKLY,
-        'monthly': MONTHLY
-    }
-    repeat_rule = repeat_rules.get(event_info["repeat"])
-
-    if repeat_rule:
-        create_repeated_events(current_user.id, event_info, dt_obj, repeat_end, repeat_rule)
-        return False
-
-    messages.info(request, 'Invalid create event request')
-    return True
-
-
-def handle_delete_event(request: WSGIRequest, current_user: User,
-                        dt_obj: datetime.date, event_info: dict[str, str]) -> bool:
-    if UserEvents.objects.filter(event=event_info["event"], date=dt_obj, beginning=event_info["begin_time"],
-                                 end=event_info["end_time"],
-                                 user_id_id=current_user.id, description=event_info["description"]).exists():
-        UserEvents.objects.filter(event=event_info["event"], date=dt_obj, beginning=event_info["begin_time"],
-                                  end=event_info["end_time"],
-                                  user_id_id=current_user.id, description=event_info["description"]).delete()
-        return False
-
-    messages.info(request, 'Event Not Found')
-    return True
-
-
-def handle_event(request: WSGIRequest, current_user: User, dt_obj: datetime.date) -> bool:
-    event = request.POST.get('event')
-    begin_hr = request.POST.get('begin_hr')
-    begin_min = request.POST.get('begin_min')
-    end_hr = request.POST.get('end_hr')
-    end_min = request.POST.get('end_min')
-
-    if any(key == '' for key in [event, begin_hr, begin_min, end_hr, end_min]):
-        messages.info(request, 'Key information is empty')
-        return True
-
-    begin_time = int(begin_hr) * 100 + int(begin_min)
-    end_time = int(end_hr) * 100 + int(end_min)
-    if begin_time >= end_time:
-        messages.info(request, 'End time is earlier than or equal to Begin time')
-        return True
-
-    event_info = {
-        'event': event,
-        'begin_time': begin_time,
-        'end_time': end_time,
-        'description': request.POST.get('description'),
-        'repeat': request.POST.get('repeat'),
-        'repeat_end': request.POST.get('repeat_end')
-    }
-
-    if request.POST.get("create"):  # TODO: event that ends at 0:00(24:00) cannot be handled
-        return handle_create_event(request, current_user, dt_obj, event_info)
-
-    if request.POST.get("delete"):
-        return handle_delete_event(request, current_user, dt_obj, event_info)
-
-    return False
-
-
 @csrf_exempt
 def calendar_day(request):
     current_user = request.user
-    error_display = False
+    valid_request = True
+    error_message = ""
     date = request.session['date']
-    month_number = datetime.datetime.strptime(date['month'][0:3], '%b').month
-    dt_obj = datetime.date(int(date['year']), month_number, int(date['day']))
+    dt_obj = datetime.date(int(date['year']),
+                           datetime.datetime.strptime(date['month'][0:3], '%b').month,
+                           int(date['day']))
 
-    if request.method == 'POST' and request.POST.get("change"):
+    if request.POST.get("change"):
         dt_obj = reload_date(request)
     elif request.method == 'POST':
-        error_display = handle_event(request, current_user, dt_obj)
-        if not error_display:
+        input_event = InputEvents(user_id=current_user.id, event=request.POST.get('event'),
+                                  date=dt_obj, begin_hr=request.POST.get('begin_hr'),
+                                  begin_min=request.POST.get('begin_min'), end_hr=request.POST.get('end_hr'),
+                                  end_min=request.POST.get('end_min'), description=request.POST.get('description'),
+                                  is_private=False if request.POST.get('is_private') is None
+                                  else request.POST.get('is_private'),
+                                  hex_color="#000000" if request.POST.get('hex_color') is None
+                                  else request.POST.get('hex_color'),
+                                  repeated_rule=request.POST.get('repeat'),
+                                  repeated_end=None if request.POST.get(
+                                      'repeat_end') == "" else datetime.datetime.strptime(
+                                      request.POST.get('repeat_end'), "%Y-%m-%d").date())
+
+        if request.POST.get("create"):
+            valid_request, error_message = input_event.create_event()
+        elif request.POST.get("delete"):
+            valid_request, error_message = input_event.delete_event()
+        else:
+            messages.info(request, "Invalid request")
+
+        messages.info(request, error_message)
+
+        if valid_request:
             return redirect("/calendar/day")
 
     context = {}
@@ -251,7 +177,7 @@ def calendar_day(request):
     event_js = json.dumps(event_list, default=str)
     context['events'] = event_js
     context['date'] = str(dt_obj)
-    context['error_display'] = error_display
+    context['valid_request'] = valid_request
 
     print(event_js)
     return render(request, 'calendar_day.html', context)
@@ -259,26 +185,45 @@ def calendar_day(request):
 
 def calendar_week(request):
     current_user = request.user
-    error_display = False
+    valid_request = True
+    error_message = ""
     date = request.session['date']
-    month_number = datetime.datetime.strptime(date['month'][0:3], '%b').month
-    dt_obj = datetime.date(int(date['year']), month_number, int(date['day']))
+    dt_obj = datetime.date(int(date['year']),
+                           datetime.datetime.strptime(date['month'][0:3], '%b').month,
+                           int(date['day']))
     dt_obj = dt_obj - datetime.timedelta(days=dt_obj.weekday())  # dt_obj will always be a Sunday
 
-    if request.method == 'POST' and request.POST.get("change"):
+    if request.POST.get("change"):
         dt_obj = reload_date(request)
-    elif request.method == 'POST' and request.POST.get('switch_day'):
+    elif request.POST.get('switch_day'):
         reload_date(request)
         return JsonResponse({'redirect': '/calendar/day'})
     elif request.method == 'POST':
-        if request.POST.get('date'):
-            target_date = datetime.datetime.strptime(request.POST.get('date'), "%Y-%m-%d").date()
-            error_display = handle_event(request, current_user, target_date)
-        else:
-            error_display = True
-            messages.info(request, 'Date is missing')
+        input_event = InputEvents(user_id=current_user.id,
+                                  event=request.POST.get('event'),
+                                  date=None if request.POST.get('date') == ""
+                                  else datetime.datetime.strptime(request.POST.get('date'), "%Y-%m-%d").date(),
+                                  begin_hr=request.POST.get('begin_hr'), begin_min=request.POST.get('begin_min'),
+                                  end_hr=request.POST.get('end_hr'), end_min=request.POST.get('end_min'),
+                                  description=request.POST.get('description'),
+                                  is_private=False if request.POST.get('is_private') is None
+                                  else request.POST.get('is_private'),
+                                  hex_color="#000000" if request.POST.get('hex_color') is None
+                                  else request.POST.get('hex_color'),
+                                  repeated_rule=request.POST.get('repeat'),
+                                  repeated_end=None if request.POST.get('repeat_end') == ""
+                                  else datetime.datetime.strptime(request.POST.get('repeat_end'), "%Y-%m-%d").date())
 
-        if not error_display:
+        if request.POST.get("create"):
+            valid_request, error_message = input_event.create_event()
+        elif request.POST.get("delete"):
+            valid_request, error_message = input_event.delete_event()
+        else:
+            messages.info(request, "Invalid request")
+
+        messages.info(request, error_message)
+
+        if valid_request:
             return redirect("/calendar/week")
 
     context = {}
@@ -293,16 +238,16 @@ def calendar_week(request):
     event_js = json.dumps(event_list, default=str)
     context['events'] = event_js
     context['date'] = str(dt_obj)
-    context['error_display'] = error_display
+    context['valid_request'] = valid_request
     print(event_js)
 
     return render(request, 'calendar_week.html', context)
 
 
-def reload_date(request, session_name = 'date'):
+def reload_date(request, session_name='date'):
     request.session[session_name] = {'year': request.POST['year'],
-                               'month': request.POST['month'],
-                               'day': request.POST['day']}
+                                     'month': request.POST['month'],
+                                     'day': request.POST['day']}
     return datetime.date(int(request.POST.get('year')),
                          datetime.datetime.strptime(request.POST.get('month')[0:3], '%b').month,
                          int(request.POST.get('day')))
@@ -355,7 +300,7 @@ def friend_calendar_day(request, username: str):
     month_number = datetime.datetime.strptime(date['month'][0:3], '%b').month
     dt_obj = datetime.date(int(date['year']), month_number, int(date['day']))
 
-    if request.method == 'POST' and request.POST.get("change"):
+    if request.POST.get("change"):
         dt_obj = reload_date(request, "friend_date")
 
     context = {}

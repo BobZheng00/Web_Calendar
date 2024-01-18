@@ -5,7 +5,7 @@
 
     <div class="top-bar">
         <div class="container" style="display: flex">
-            {% if error_display != 'no_need' %}
+            {% if valid_request != 'no_need' %}
                 <h2 id="prev" onclick="prevWeek('{{ date }}')"><<</h2>
                 <h2 id="date-label">{{ date|slice:":-3" }} Schedule</h2>
                 <h2 id="next" onclick="nextWeek('{{ date }}')">>></h2>
@@ -22,7 +22,7 @@
             {% endif %}
         </div>
     </div>
-    <div class="sidebar" id="mySidebar" style="{% if error_display %}width: 400px{% else %}width: 0{% endif %}">
+    <div class="sidebar" id="mySidebar" style="{% if valid_request %}width: 0px{% else %}width: 400px{% endif %}">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
         {% if error_display != "no_need" %}
         <a class="back" href="/calendar">Back to Month</a>
