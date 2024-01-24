@@ -178,6 +178,7 @@ def calendar_day(request):
     context['events'] = event_js
     context['date'] = str(dt_obj)
     context['valid_request'] = valid_request
+    context["friend_username"] = 'default'
 
     print(event_js)
     return render(request, 'calendar_day.html', context)
@@ -239,6 +240,7 @@ def calendar_week(request):
     context['events'] = event_js
     context['date'] = str(dt_obj)
     context['valid_request'] = valid_request
+    context["friend_username"] = 'default'
     print(event_js)
 
     return render(request, 'calendar_week.html', context)
