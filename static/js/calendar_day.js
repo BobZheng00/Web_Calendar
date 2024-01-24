@@ -90,7 +90,7 @@ function loadDailySessions(events) {
     for (let i = 0; i < events.length; i++) {
         const time_diff = ((Math.floor(events[i]['end'] / 100) * 60 + events[i]['end'] % 100) - (Math.floor(events[i]['beginning'] / 100) * 60 + events[i]['beginning'] % 100)) / 60
 
-        cur_event = `<div id='${i}' class="session session-8 track-1" style="grid-column: track-1; grid-row: span time-${events[i]['beginning']} / time-${events[i]['end']}; z-index: 2;">
+        cur_event = `<div id='${i}' class="session session-8 track-1" style="grid-column: track-1; grid-row: span time-${events[i]['beginning']} / time-${events[i]['end']}; z-index: 2; background-color:${events[i]['hex_color']}">
         <h3 class="session-title"><a onclick="displayInPanel(this)">${events[i]['event']}</a></h3>
         <span class="session-time">${~~(events[i]['beginning'] / 100)}:${('0' + events[i]['beginning'] % 100).slice(-2)} - ${~~(events[i]['end'] / 100)}:${('0' + events[i]['end'] % 100).slice(-2)}</span>
         <span id='${i}description' class="session-presenter" >${events[i]['description']}</span>

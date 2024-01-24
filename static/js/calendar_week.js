@@ -17,7 +17,7 @@ function loadWeeklySessions(events, dateString) {
         for (let i = 0; i < value.length; i++) {
             const time_diff = ((Math.floor(value[i]['end'] / 100) * 60 + value[i]['end'] % 100) -
                 (Math.floor(value[i]['beginning'] / 100) * 60 + value[i]['beginning'] % 100)) / 60;
-            let cur_event = `<div id='${key}-${i}' class="session session-8 track-1" style="grid-column: track-${parseInt(key)+1}; grid-row: span time-${value[i]['beginning']} / time-${value[i]['end']}; z-index: 2;">
+            let cur_event = `<div id='${key}-${i}' class="session session-8 track-1" style="grid-column: track-${parseInt(key)+1}; grid-row: span time-${value[i]['beginning']} / time-${value[i]['end']}; z-index: 2; background-color:${value[i]['hex_color']}">
                 <h3 class="session-title"><a onclick="displayInWeeklyPanel(this)">${value[i]['event']}</a></h3>
                 <span class="session-time">${~~(value[i]['beginning'] / 100)}:${('0' + value[i]['beginning'] % 100).slice(-2)} - ${~~(value[i]['end'] / 100)}:${('0' + value[i]['end'] % 100).slice(-2)}</span>
                 <span id='${key}-${i}description' class="session-presenter" >${value[i]['description']}</span>

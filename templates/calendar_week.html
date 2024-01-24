@@ -7,7 +7,12 @@
         <div class="container" style="display: flex">
             {% if valid_request != 'no_need' %}
                 <h2 id="prev" onclick="prevWeek('{{ date }}')"><<</h2>
-                <h2 id="date-label">{{ date|slice:":-3" }} Schedule</h2>
+                {% if friend_username != 'default' %}
+                    <h2 id="date-label">{{ friend_username }}'s {{ date|slice:":-3" }} Schedule</h2>
+                {% else %}
+                    <h2 id="date-label">{{ date|slice:":-3" }} Schedule</h2>
+                {% endif %}
+
                 <h2 id="next" onclick="nextWeek('{{ date }}')">>></h2>
                 <div class="openbtn-container">
                     <button class="openbtn" onclick="openNav()">☰ Open Editor</button>
@@ -101,6 +106,8 @@
             <option value="00"> 00 </option>
             <option value="30"> 30 </option>
         </select><br><br>
+        Event Colour: <input type="color" id="hex_color" name="hex_color" value="#11be7c"><br><br>
+        Hide from friends: <input id="is_private" name="is_private" type="checkbox" style="vertical-align: text-bottom"><br><br>
             Description: <br><textarea name="description" id="description" rows="4" cols="50"></textarea><br><br>
             {% if error_display != "no_need" %}
             Repeat:

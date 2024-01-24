@@ -148,8 +148,8 @@ def calendar_day(request):
                                   begin_min=request.POST.get('begin_min'), end_hr=request.POST.get('end_hr'),
                                   end_min=request.POST.get('end_min'), description=request.POST.get('description'),
                                   is_private=False if request.POST.get('is_private') is None
-                                  else request.POST.get('is_private'),
-                                  hex_color="#000000" if request.POST.get('hex_color') is None
+                                  else request.POST.get('is_private').lower() == 'on',
+                                  hex_color="#11be7c" if request.POST.get('hex_color') is None
                                   else request.POST.get('hex_color'),
                                   repeated_rule=request.POST.get('repeat'),
                                   repeated_end=None if request.POST.get(
@@ -207,8 +207,8 @@ def calendar_week(request):
                                   end_hr=request.POST.get('end_hr'), end_min=request.POST.get('end_min'),
                                   description=request.POST.get('description'),
                                   is_private=False if request.POST.get('is_private') is None
-                                  else request.POST.get('is_private'),
-                                  hex_color="#000000" if request.POST.get('hex_color') is None
+                                  else request.POST.get('is_private').lower() == 'on',
+                                  hex_color="#11be7c" if request.POST.get('hex_color') is None
                                   else request.POST.get('hex_color'),
                                   repeated_rule=request.POST.get('repeat'),
                                   repeated_end=None if request.POST.get('repeat_end') == ""
@@ -281,9 +281,7 @@ def friend_calendar_week(request, username: str):
 
     for i in range(7):
         event_query = UserEvents.objects.filter(user_id=friend_id, date=dt_obj + datetime.timedelta(days=i))
-        event_list[str(i)] = []
-        for event in event_query:
-            event_list[str(i)].append(model_to_dict(event))
+        event_list[str(i)] = [model_to_dict(event) for event in event_query if not model_to_dict(event)['is_private']]
 
     event_js = json.dumps(event_list, default=str)
     context['friend_username'] = username
@@ -304,11 +302,9 @@ def friend_calendar_day(request, username: str):
         dt_obj = reload_date(request, "friend_date")
 
     context = {}
-    event_list = []
 
     event_query = UserEvents.objects.filter(user_id=friend_id, date=dt_obj)
-    for event in event_query:
-        event_list.append(model_to_dict(event))
+    event_list = [model_to_dict(event) for event in event_query if not model_to_dict(event)['is_private']]
     event_js = json.dumps(event_list, default=str)
     context['friend_username'] = username
     context['events'] = event_js
