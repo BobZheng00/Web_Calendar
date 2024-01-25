@@ -13,6 +13,10 @@
                 <h2 id="date-label">{{ date }} Schedule</h2>
             {% endif %}
             <h2 id="next" onclick="nextDay('{{ date }}')">>></h2>
+
+            <div class="openbtn-container">
+                <button class="openbtn" onclick="requestDownload()">Download Schedule</button>
+            </div>
             <div class="openbtn-container">
                 <button class="openbtn" onclick="openNav()">☰ Open Editor</button>
             </div>
@@ -20,6 +24,9 @@
                 <h2 id="prev" onclick="prevDay('{{ date }}')"><<</h2>
                 <h2 id="date-label">{{ friend_username }}'s {{ date }} Schedule</h2>
                 <h2 id="next" onclick="nextDay('{{ date }}')">>></h2>
+                <div class="openbtn-container">
+                    <button class="openbtn" onclick="requestDownload()">Download Schedule</button>
+                </div>
                 <div class="openbtn-container">
                     <button class="openbtn" onclick="openNav()">☰ Open Viewer</button>
                 </div>

@@ -73,3 +73,16 @@ function enterDayView(dateTrack) {
             }
         });
 }
+
+const requestWeekDownload = () => {
+    let element = document.body;
+    let fileName = document.getElementById("date-label").textContent + ".pdf";
+
+    html2pdf(element, {
+        margin:       5,
+        filename:     fileName,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 5, y: 125 },
+        jsPDF:        { unit: 'mm', format: [210, 320], orientation: 'landscape' }
+    });
+}

@@ -155,3 +155,18 @@ function changeDay(dateString, change) {
 function dateObjToString(dateObj) {
     return dateObj.getFullYear().toString() + "-" + (dateObj.getMonth() + 1).toString() + "-" + dateObj.getDate().toString();
 }
+
+
+const requestDownload = () => {
+    let element = document.body;
+    let fileName = document.getElementById("date-label").textContent + ".pdf";
+
+    html2pdf(element, {
+
+        margin:       10,
+        filename:     fileName,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 5, y: 125 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    });
+}

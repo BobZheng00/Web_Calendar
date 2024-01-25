@@ -15,12 +15,18 @@
 
                 <h2 id="next" onclick="nextWeek('{{ date }}')">>></h2>
                 <div class="openbtn-container">
+                    <button class="openbtn" onclick="requestWeekDownload()">Download Schedule</button>
+                </div>
+                <div class="openbtn-container">
                     <button class="openbtn" onclick="openNav()">☰ Open Editor</button>
                 </div>
             {% else %}
                 <h2 id="prev" onclick="prevWeek('{{ date }}')"><<</h2>
                 <h2 id="date-label">{{ friend_username }}'s {{ date|slice:":-3" }} Schedule</h2>
                 <h2 id="next" onclick="nextWeek('{{ date }}')">>></h2>
+                <div class="openbtn-container">
+                    <button class="openbtn" onclick="requestWeekDownload()">Download Schedule</button>
+                </div>
                 <div class="openbtn-container">
                     <button class="openbtn" onclick="openNav()">☰ Open Viewer</button>
                 </div>
