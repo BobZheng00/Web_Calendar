@@ -158,6 +158,7 @@ function dateObjToString(dateObj) {
 
 
 const requestDownload = () => {
+    window.scrollTo(0, 0);
     let element = document.body;
     let fileName = document.getElementById("date-label").textContent + ".pdf";
 
