@@ -171,7 +171,8 @@
             }
 
             grid.addEventListener('mousedown', function(e) {
-                if (e.button === 2) {
+                if (e.button === 2 || e.target.classList.contains('session-display')) {
+                    console.log(e.target.classList);
                     return;
                 }
                 isMouseDown = true;
@@ -186,7 +187,7 @@
                 console.log('Mouse down at Row: ' + downPos.row + ', Column: ' + downPos.col);
 
                 function mouseUpHandler(e) {
-                    if (e.button === 2) {
+                    if (e.button === 2 || e.target.classList.contains('session-display')) {
                         return;
                     }
                     isMouseDown = false;
