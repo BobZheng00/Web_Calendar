@@ -99,7 +99,7 @@ function loadDailySessions(events) {
         if (time_diff === 0.5) {
             document.getElementById(i.toString() + "description").style.height = "0";
         } else {
-            document.getElementById(i.toString() + "description").style.minHeight = (time_diff * 6 - 2).toString() + "em";
+            document.getElementById(i.toString() + "description").style.minHeight = (time_diff * 6 - 3).toString() + "em";
         }
 
     }

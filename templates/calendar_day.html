@@ -141,6 +141,83 @@
 
     <script>
         const events = JSON.parse('{{ events|escapejs }}');
+
+        function rowToTime(row) {
+            return (Math.floor((row-1)/2) * 100 + ((row-1)%2) * 30).toString();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let isMouseDown = false;
+            let startRow = 0;
+            let currentRow = 0;
+            const grid = document.getElementById('table');
+            const schedule = document.querySelector(".schedule");
+            let new_event = "";
+
+            function getGridPosition(e) {
+                const gridRect = grid.getBoundingClientRect();
+                const x = e.clientX - gridRect.left;
+                const y = e.clientY - gridRect.top - 100;
+                const totalRows = 49;
+                const totalCols = 1;
+
+                const colWidth = gridRect.width / totalCols;
+                const rowHeight = (gridRect.height - 100) / totalRows;
+                console.log(gridRect.height)
+
+                const col = Math.ceil(x / colWidth);
+                const row = Math.min(Math.max(Math.ceil(y / rowHeight), 1), 48);
+                return {row: row, col: col};
+            }
+
+            grid.addEventListener('mousedown', function(e) {
+                if (e.button === 2) {
+                    return;
+                }
+                isMouseDown = true;
+                startRow = getGridPosition(e).row;
+                let downPos = getGridPosition(e);
+                new_event = `<div id='new_event' class="session session-8 track-1" style="grid-column: track-1; grid-row: span time-${rowToTime(downPos.row)} / time-${rowToTime(downPos.row+1)}; z-index: 2; background-color:#11be7c; opacity: 0.9">
+                <h3 class="session-title"><a onclick="displayInPanel(this)">New Event</a></h3>
+                <span class="session-time"></span>
+                <span id='description' class="session-presenter" ></span>
+                </div>`;
+                schedule.insertAdjacentHTML('beforeend', new_event);
+                console.log('Mouse down at Row: ' + downPos.row + ', Column: ' + downPos.col);
+
+                function mouseUpHandler(e) {
+                    if (e.button === 2) {
+                        return;
+                    }
+                    isMouseDown = false;
+                    const upPos = getGridPosition(e);
+                    console.log('Mouse up at Row: ' + upPos.row + ', Column: ' + upPos.col, ", " + parseInt(getComputedStyle(grid).paddingTop));
+
+                    grid.removeEventListener('mouseup', mouseUpHandler);
+                }
+
+                grid.addEventListener('mouseup', mouseUpHandler);
+            });
+
+            grid.addEventListener('mousemove', function(e) {
+                if (isMouseDown) {
+                    currentRow = getGridPosition(e).row;
+                    let newEvent = document.getElementById('new_event');
+                    if (currentRow === startRow) {
+                        newEvent.style.gridRow = `span time-${rowToTime(startRow)} / time-${rowToTime(currentRow+1)}`;
+                        newEvent.querySelector('#description').style.height = "0";
+                        newEvent.querySelector('.session-time').textContent = `${~~(parseInt(rowToTime(startRow))/100)}:${('0'+rowToTime(startRow).slice(-2)).slice(-2)} - ${~~(parseInt(rowToTime(currentRow+1))/100)}:${('0'+rowToTime(currentRow+1).slice(-2)).slice(-2)}`;
+                    } else if (currentRow >= startRow && currentRow <= 49) {
+                        newEvent.style.gridRow = `span time-${rowToTime(startRow)} / time-${rowToTime(currentRow+1)}`;
+                        newEvent.querySelector('.session-time').textContent = `${~~(parseInt(rowToTime(startRow))/100)}:${('0'+rowToTime(startRow).slice(-2)).slice(-2)} - ${~~(parseInt(rowToTime(currentRow+1))/100)}:${('0'+rowToTime(currentRow+1).slice(-2)).slice(-2)}`;
+                    } else if (currentRow < startRow) {
+                        newEvent.style.gridRow = `span time-${rowToTime(currentRow)} / time-${rowToTime(startRow+1)}`;
+                        newEvent.querySelector('.session-time').textContent = `${~~(parseInt(rowToTime(currentRow))/100)}:${('0'+rowToTime(currentRow).slice(-2)).slice(-2)} - ${~~(parseInt(rowToTime(startRow+1))/100)}:${('0'+rowToTime(startRow+1).slice(-2)).slice(-2)}`;
+                    }
+
+                }
+            });
+        });
         loadDailySessions(events);
     </script>
 
