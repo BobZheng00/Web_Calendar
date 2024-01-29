@@ -6,55 +6,55 @@
         grid-gap: 0;
         grid-template-rows:
         [tracks] auto
-        [time-0] minmax(3em, auto)
-        [time-30] minmax(3em, auto)
-        [time-100] minmax(3em, auto)
-        [time-130] minmax(3em, auto)
-        [time-200] minmax(3em, auto)
-        [time-230] minmax(3em, auto)
-        [time-300] minmax(3em, auto)
-        [time-330] minmax(3em, auto)
-        [time-400] minmax(3em, auto)
-        [time-430] minmax(3em, auto)
-        [time-500] minmax(3em, auto)
-        [time-530] minmax(3em, auto)
-        [time-600] minmax(3em, auto)
-        [time-630] minmax(3em, auto)
-        [time-700] minmax(3em, auto)
-        [time-730] minmax(3em, auto)
-        [time-800] minmax(3em, auto)
-        [time-830] minmax(3em, auto)
-        [time-900] minmax(3em, auto)
-        [time-930] minmax(3em, auto)
-        [time-1000] minmax(3em, auto)
-        [time-1030] minmax(3em, auto)
-        [time-1100] minmax(3em, auto)
-        [time-1130] minmax(3em, auto)
-        [time-1200] minmax(3em, auto)
-        [time-1230] minmax(3em, auto)
-        [time-1300] minmax(3em, auto)
-        [time-1330] minmax(3em, auto)
-        [time-1400] minmax(3em, auto)
-        [time-1430] minmax(3em, auto)
-        [time-1500] minmax(3em, auto)
-        [time-1530] minmax(3em, auto)
-        [time-1600] minmax(3em, auto)
-        [time-1630] minmax(3em, auto)
-        [time-1700] minmax(3em, auto)
-        [time-1730] minmax(3em, auto)
-        [time-1800] minmax(3em, auto)
-        [time-1830] minmax(3em, auto)
-        [time-1900] minmax(3em, auto)
-        [time-1930] minmax(3em, auto)
-        [time-2000] minmax(3em, auto)
-        [time-2030] minmax(3em, auto)
-        [time-2100] minmax(3em, auto)
-        [time-2130] minmax(3em, auto)
-        [time-2200] minmax(3em, auto)
-        [time-2230] minmax(3em, auto)
-        [time-2300] minmax(3em, auto)
-        [time-2330] minmax(3em, auto)
-        [time-2400] minmax(3em, auto);
+        [time-0]    3em
+        [time-30]   3em
+        [time-100]  3em
+        [time-130]  3em
+        [time-200]  3em
+        [time-230]  3em
+        [time-300]  3em
+        [time-330]  3em
+        [time-400]  3em
+        [time-430]  3em
+        [time-500]  3em
+        [time-530]  3em
+        [time-600]  3em
+        [time-630]  3em
+        [time-700]  3em
+        [time-730]  3em
+        [time-800]  3em
+        [time-830]  3em
+        [time-900]  3em
+        [time-930]  3em
+        [time-1000] 3em
+        [time-1030] 3em
+        [time-1100] 3em
+        [time-1130] 3em
+        [time-1200] 3em
+        [time-1230] 3em
+        [time-1300] 3em
+        [time-1330] 3em
+        [time-1400] 3em
+        [time-1430] 3em
+        [time-1500] 3em
+        [time-1530] 3em
+        [time-1600] 3em
+        [time-1630] 3em
+        [time-1700] 3em
+        [time-1730] 3em
+        [time-1800] 3em
+        [time-1830] 3em
+        [time-1900] 3em
+        [time-1930] 3em
+        [time-2000] 3em
+        [time-2030] 3em
+        [time-2100] 3em
+        [time-2130] 3em
+        [time-2200] 3em
+        [time-2230] 3em
+        [time-2300] 3em
+        [time-2330] 3em
+        [time-2400] 3em;
         grid-template-columns:
         [times] 4em
         [track-1-start] 1fr

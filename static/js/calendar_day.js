@@ -171,3 +171,115 @@ const requestDownload = () => {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     });
 }
+
+function rowToTime(row) {
+    return (Math.floor((row - 1) / 2) * 100 + ((row - 1) % 2) * 30).toString();
+}
+
+function getGridPosition(e, grid) {
+    const gridRect = grid.getBoundingClientRect();
+    const x = e.clientX - gridRect.left;
+    const y = e.clientY - gridRect.top - 100;
+    const totalRows = 49;
+    const colWidth = gridRect.width;
+    const rowHeight = (gridRect.height - 100) / totalRows;
+    const col = Math.ceil(x / colWidth);
+    const row = Math.min(Math.max(Math.ceil(y / rowHeight), 1), 48);
+    return { row, col };
+}
+
+function formatSessionTime(startRow, endRow) {
+    const startTime = `${~~(parseInt(rowToTime(startRow)) / 100)}:${('0' + rowToTime(startRow).slice(-2)).slice(-2)}`;
+    const endTime = `${~~(parseInt(rowToTime(endRow)) / 100)}:${('0' + rowToTime(endRow).slice(-2)).slice(-2)}`;
+    return `${startTime} - ${endTime}`;
+}
+
+function clearForm() {
+    let i;
+    const form = document.getElementById('form');
+
+    const inputs = form.getElementsByTagName('input');
+
+    for (const input of inputs) {
+        if (input.type === "checkbox") {
+            input.checked = false;
+        } else if (input.type === "color") {
+            input.value = "#11be7c";
+        } else {
+            input.value = "";
+        }
+    }
+
+    const textareas = form.getElementsByTagName('textarea');
+    for (i = 0; i < textareas.length; i++) {
+        textareas[i].value = "";
+    }
+
+    const selects = form.getElementsByTagName('select');
+    for (i = 0; i < selects.length; i++) {
+        selects[i].selectedIndex = 0;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    let isMouseDown = false;
+    let startRow = 0;
+    let inEdit = false;
+    const grid = document.getElementById('table');
+    const schedule = document.querySelector(".schedule");
+
+    document.addEventListener('mousedown', e => {
+        console.log(e.target.classList)
+        if ((!(e.target.classList.contains('sidebar') || e.target.classList.length === 0)) && inEdit) {
+            let editPnl = document.getElementById("mySidebar");
+            editPnl.style.width = "0px";
+            document.getElementById('new_event').remove();
+            clearForm();
+            inEdit = false;
+        }
+    });
+
+    grid.addEventListener('mousedown', e => {
+        if (e.button === 2 || e.target.classList.contains('session-display')) {
+            return;
+        }
+
+        isMouseDown = true;
+        startRow = getGridPosition(e, grid).row;
+        let newEventHTML = `<div id='new_event' class="session session-8 track-1" style="grid-column: track-1; grid-row: span time-${rowToTime(startRow)} / time-${rowToTime(startRow + 1)}; z-index: 2; background-color:#11be7c; opacity: 0.9">
+                <h3 class="session-title"><a onclick="displayInPanel(this)">New Event</a></h3>
+                <span class="session-time"></span>
+                <span id='description' class="session-presenter" ></span>
+            </div>`;
+        schedule.insertAdjacentHTML('beforeend', newEventHTML);
+
+        function mouseUpHandler(e) {
+            if (e.button === 2 || e.target.classList.contains('session-display')) {
+                return;
+            }
+            let editPnl = document.getElementById("mySidebar");
+            if (editPnl.style.width === '0px') {
+                editPnl.style.width = "400px";
+                console.log("mouse up");
+            }
+            console.log(e.target.classList);
+            isMouseDown = false;
+            inEdit = true;
+            grid.removeEventListener('mouseup', mouseUpHandler);
+        }
+
+        grid.addEventListener('mouseup', mouseUpHandler);
+    });
+
+    grid.addEventListener('mousemove', function(e) {
+        if (isMouseDown) {
+            console.log(e.target.classList);
+            let currentRow = getGridPosition(e, grid).row;
+            let newEvent = document.getElementById('new_event');
+            let timeRange = currentRow >= startRow ? [startRow, currentRow + 1] : [currentRow, startRow + 1];
+            newEvent.style.gridRow = `span time-${rowToTime(timeRange[0])} / time-${rowToTime(timeRange[1])}`;
+            newEvent.querySelector('.session-time').textContent = formatSessionTime(timeRange[0], timeRange[1]);
+        }
+    });
+});
+
