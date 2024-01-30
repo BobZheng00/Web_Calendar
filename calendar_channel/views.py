@@ -149,6 +149,8 @@ def calendar_day(request):
                                   end_min=request.POST.get('end_min'), description=request.POST.get('description'),
                                   is_private=False if request.POST.get('is_private') is None
                                   else request.POST.get('is_private').lower() == 'on',
+                                  is_pined=False if request.POST.get('is_pined') is None
+                                  else request.POST.get('is_pined').lower() == 'on',
                                   hex_color="#11be7c" if request.POST.get('hex_color') is None
                                   else request.POST.get('hex_color'),
                                   repeated_rule=request.POST.get('repeat'),
@@ -209,6 +211,8 @@ def calendar_week(request):
                                   description=request.POST.get('description'),
                                   is_private=False if request.POST.get('is_private') is None
                                   else request.POST.get('is_private').lower() == 'on',
+                                  is_pined=False if request.POST.get('is_pined') is None
+                                  else request.POST.get('is_pined').lower() == 'on',
                                   hex_color="#11be7c" if request.POST.get('hex_color') is None
                                   else request.POST.get('hex_color'),
                                   repeated_rule=request.POST.get('repeat'),

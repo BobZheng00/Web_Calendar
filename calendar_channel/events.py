@@ -14,13 +14,14 @@ class InputEvents:
 
     def __init__(self, user_id: int = None, event: str = None, date: datetime.date = None, begin_hr: str = None,
                  begin_min: str = None, end_hr: str = None, end_min: str = None, description: str = "",
-                 is_private: bool = False, hex_color: str = "#000000", repeated_rule: str = "once",
+                 is_private: bool = False, is_pined: bool = False, hex_color: str = "#000000", repeated_rule: str = "once",
                  repeated_end: datetime.date = None):
         self.user_id = user_id
         self.event = event
         self.date = date
         self.description = description
         self.is_private = is_private
+        self.is_pined = is_pined
         self.hex_color = hex_color
         self.repeated_rule = repeated_rule
         self.repeated_end = repeated_end
@@ -53,7 +54,7 @@ class InputEvents:
         return f"InputEvents(user_id={self.user_id}, event={self.event}, date={self.date}, " \
                f"beginning={self.beginning}, end={self.end}, description={self.description}, " \
                f"is_private={self.is_private}, hex_color={self.hex_color}, repeated_rule={self.repeated_rule}, " \
-               f"repeated_end={self.repeated_end})"
+               f"repeated_end={self.repeated_end}, is_pined={self.is_pined})"
 
     def is_exist(self) -> bool:
         return UserEvents.objects.filter(user_id_id=self.user_id, event=self.event, date=self.date,
@@ -67,7 +68,7 @@ class InputEvents:
         if self.repeated_rule == "once":
             UserEvents.objects.create(user_id_id=self.user_id, event=self.event, date=self.date,
                                       beginning=self.beginning, end=self.end, description=self.description,
-                                      is_private=self.is_private, hex_color=self.hex_color)
+                                      is_private=self.is_private, is_pined=self.is_pined, hex_color=self.hex_color)
             return True, "Event is successfully created"
 
         # Create repeated events
@@ -75,7 +76,7 @@ class InputEvents:
             for date in rrule(InputEvents.repeat_rules[self.repeated_rule], dtstart=self.date, until=self.repeated_end):
                 UserEvents.objects.create(user_id_id=self.user_id, event=self.event, date=date,
                                           beginning=self.beginning, end=self.end, description=self.description,
-                                          is_private=self.is_private, hex_color=self.hex_color)
+                                          is_private=self.is_private, is_pined=self.is_pined, hex_color=self.hex_color)
             return True, "Events are successfully created"
         else:
             return False, "Invalid event creation"
