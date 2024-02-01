@@ -33,6 +33,30 @@
             {% endif %}
         </div>
     </div>
+
+    <div class="pinned-container">
+        <h3>Pinned Tasks</h3>
+        <div class="session" style="background-color: #1aa972; height: 250px">
+            <div class="session-content">
+                <h3 class="session-title">
+                    <a>Task 1</a>
+                </h3>
+                <div class="session-time">
+                    <span>10:00 - 11:00</span>
+                </div>
+            </div>
+        </div>
+        <div class="session" style="background-color: #1aa972; height: 250px">
+            <div class="session-content">
+                <h3 class="session-title">
+                    <a>Task 2</a>
+                </h3>
+                <div class="session-time">
+                    <span>10:00 - 11:00</span>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="sidebar" id="mySidebar" style="{% if valid_request %}width: 0{% else %}width: 400px{% endif %}">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
         {% if error_display != "no_need" %}

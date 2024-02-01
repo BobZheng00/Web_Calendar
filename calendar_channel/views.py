@@ -173,16 +173,15 @@ def calendar_day(request):
     context = {}
     event_list = []
 
-    event_query = UserEvents.objects.filter(user_id=current_user.id, date=dt_obj)
-    for event in event_query:
+    for event in UserEvents.objects.filter(user_id=current_user.id, date=dt_obj, is_pined=False):
         event_list.append(model_to_dict(event))
-    event_js = json.dumps(event_list, default=str)
-    context['events'] = event_js
+
+    context['pinned'] = get_pinned_events(current_user.id)
+    context['events'] = json.dumps(event_list, default=str)
     context['date'] = str(dt_obj)
     context['valid_request'] = valid_request
     context["friend_username"] = 'default'
 
-    print(event_js)
     return render(request, 'calendar_day.html', context)
 
 
@@ -235,17 +234,15 @@ def calendar_week(request):
     event_list = {}
 
     for i in range(7):
-        event_query = UserEvents.objects.filter(user_id=current_user.id, date=dt_obj + datetime.timedelta(days=i))
         event_list[str(i)] = []
-        for event in event_query:
+        for event in UserEvents.objects.filter(user_id=current_user.id, date=dt_obj + datetime.timedelta(days=i)):
             event_list[str(i)].append(model_to_dict(event))
 
-    event_js = json.dumps(event_list, default=str)
-    context['events'] = event_js
+    context['events'] = json.dumps(event_list, default=str)
+    context['pinned'] = get_pinned_events(current_user.id)
     context['date'] = str(dt_obj)
     context['valid_request'] = valid_request
     context["friend_username"] = 'default'
-    print(event_js)
 
     return render(request, 'calendar_week.html', context)
 
@@ -319,3 +316,9 @@ def friend_calendar_day(request, username: str):
 
     print(event_js)
     return render(request, 'calendar_day.html', context)
+
+
+def get_pinned_events(user_id: int) -> str:
+    pinned_list = [model_to_dict(event) for event in
+                   UserEvents.objects.filter(user_id=user_id, is_pined=True).order_by("date")]
+    return json.dumps(pinned_list, default=str)
