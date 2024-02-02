@@ -26,7 +26,7 @@ function loadWeeklySessions(events, dateString) {
             if (time_diff === 0.5) {
                 document.getElementById(key + "-" + i.toString() + "description").style.height = "0";
             } else {
-                document.getElementById(key + "-" + i.toString() + "description").style.minHeight = (time_diff * 6 - 3).toString() + "em";
+                document.getElementById(key + "-" + i.toString() + "description").style.minHeight = (time_diff * 6 - 3.3).toString() + "em";
             }
         }
     }

@@ -99,7 +99,7 @@ function loadDailySessions(events) {
         if (time_diff === 0.5) {
             document.getElementById(i.toString() + "description").style.height = "0";
         } else {
-            document.getElementById(i.toString() + "description").style.minHeight = (time_diff * 6 - 3).toString() + "em";
+            document.getElementById(i.toString() + "description").style.minHeight = (time_diff * 6 - 3.3).toString() + "em";
         }
 
     }
@@ -218,6 +218,57 @@ function clearForm() {
     const selects = form.getElementsByTagName('select');
     for (i = 0; i < selects.length; i++) {
         selects[i].selectedIndex = 0;
+    }
+}
+
+
+function createDateFromString(dateString) {
+    let parts = dateString.split('-');
+
+    let year = parseInt(parts[0], 10);
+    let month = parseInt(parts[1], 10) - 1; // January is 0, February is 1, etc.
+    let day = parseInt(parts[2], 10);
+
+    return new Date(year, month, day);
+}
+
+function getTimeDifferenceMessage(dateString, timeString) {
+    console.log(dateString, timeString);
+    let date = createDateFromString(dateString);
+    let [hours, minutes] = timeString.split(':').map(Number);
+    date.setHours(hours, minutes, 0, 0);
+
+    let currentDate = new Date();
+    console.log(date, currentDate);
+
+    if (currentDate > date) {
+        return 'Expired';
+    }
+
+    let difference = date - currentDate;
+
+    let days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    let hoursLeft = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    let minutesLeft = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+
+    return `${days} days ${hoursLeft} hr ${minutesLeft} min left`;
+}
+
+
+function loadPinnedEvents(pinned) {
+    const pinnedContainer = document.querySelector('.pinned-container');
+    let cur_pinned = "";
+    for (const element of pinned) {
+        let date = element['date'];
+        let time = ~~(element['beginning'] / 100)+":"+('0' + element['beginning'] % 100).slice(-2)
+        cur_pinned = `<div id='${element['id']}' class="session track-1" style="background-color:${element['hex_color']}">
+        <h3 class="session-title"><a class="session-display">${element['event']}</a></h3>
+        <span class="session-time">${element['date']}</span>
+        <span class="session-time">${~~(element['beginning'] / 100)}:${('0' + element['beginning'] % 100).slice(-2)} - ${~~(element['end'] / 100)}:${('0' + element['end'] % 100).slice(-2)}</span>
+        <span class="session-time">${getTimeDifferenceMessage(date, time)}</span>
+        <span class="session-presenter">${element['description']}</span>
+        </div>`;
+        pinnedContainer.insertAdjacentHTML('beforeend', cur_pinned);
     }
 }
 

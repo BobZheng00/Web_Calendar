@@ -173,10 +173,11 @@ def calendar_day(request):
     context = {}
     event_list = []
 
-    for event in UserEvents.objects.filter(user_id=current_user.id, date=dt_obj, is_pined=False):
+    for event in UserEvents.objects.filter(user_id=current_user.id, date=dt_obj):
         event_list.append(model_to_dict(event))
 
     context['pinned'] = get_pinned_events(current_user.id)
+    print(event_list)
     context['events'] = json.dumps(event_list, default=str)
     context['date'] = str(dt_obj)
     context['valid_request'] = valid_request

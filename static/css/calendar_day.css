@@ -134,6 +134,10 @@
     white-space: normal;
 }
 
+.session-presenter {
+    overflow-y: auto;
+}
+
 .track-slot,
 .session-title,
 .time-slot {
