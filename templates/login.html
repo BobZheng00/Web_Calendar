@@ -10,6 +10,7 @@
 
 					<h3 id="form-title">LOGIN</h3>
 				</div>
+            <a href="{% url 'socialaccount_begin' 'discord' %}">Register / Log In with Discord</a>
 				<div class="d-flex justify-content-center form_container">
 					<form method="post" action=""> {% csrf_token %}
 						<div class="input-group mb-3 login_container">

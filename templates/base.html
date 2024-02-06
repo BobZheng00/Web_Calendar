@@ -54,8 +54,8 @@
                 <span style="float:right"><a href="{% url 'logout' %}">Logout</a></span>
                 <span style="color: white; float:right; padding: 16px 16px; font-size: 14px;">Hello, {{ request.user }}</span>
             {% else %}
-                <a href="/register">Register</a>
-                <a href="/login">Login</a>
+                <a href="/accounts/signup">Register</a>
+                <a href="/accounts/login">Login</a>
             {% endif %}
         </div>
 
