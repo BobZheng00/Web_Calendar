@@ -13,4 +13,5 @@ urlpatterns = [
     path('<str:username>/calendar/', views.friend_calendar, name='calendar'),
     path('<str:username>/calendar/week/', views.friend_calendar_week, name='calendar_week'),
     path('<str:username>/calendar/day/', views.friend_calendar_day, name='calendar_day'),
+    path('api/userdata/<str:discord_id>/', views.UserDataView.as_view(), name='api_userdata'),
 ]

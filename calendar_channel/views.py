@@ -10,6 +10,11 @@ from django.forms.models import model_to_dict
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+from allauth.socialaccount.models import SocialAccount
 
 from .events import InputEvents
 from .forms import CreateUserForm
@@ -323,3 +328,15 @@ def get_pinned_events(user_id: int) -> str:
     pinned_list = [model_to_dict(event) for event in
                    UserEvents.objects.filter(user_id=user_id, is_pined=True).order_by("date")]
     return json.dumps(pinned_list, default=str)
+
+
+class UserDataView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, discord_id, *args, **kwargs):
+        user = SocialAccount.objects.filter(provider='discord', uid=discord_id).first()
+        if user is None:
+            return Response({"error": "User not found"}, status=404)
+        data = {"username": user.extra_data}
+        return Response(data)

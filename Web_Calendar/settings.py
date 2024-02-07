@@ -38,11 +38,19 @@ CSRF_TRUSTED_ORIGINS = [
     'https://web-calendar.fly.dev',
 ]
 
-SITE_ID = 1
+SITE_ID = 2
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'rest_framework.authtoken',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
