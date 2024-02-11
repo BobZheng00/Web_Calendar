@@ -338,5 +338,28 @@ class UserDataView(APIView):
         user = SocialAccount.objects.filter(provider='discord', uid=discord_id).first()
         if user is None:
             return Response({"error": "User not found"}, status=404)
+        if "fetch" in request.query_params:
+            start_date = datetime.datetime.strptime(request.query_params['start_date'], "%Y-%m-%d").date()
+            end_date = datetime.datetime.strptime(request.query_params['end_date'], "%Y-%m-%d").date()
+
+            events = UserEvents.objects.filter(
+                user_id=user.user.id,
+                date__gte=start_date,
+                date__lte=end_date
+            ).order_by('date', 'beginning')
+
+            events_data = [{
+                'event': event.event,
+                'date': event.date,
+                'beginning': event.beginning,
+                'end': event.end,
+                'description': event.description,
+                'is_private': event.is_private,
+                'is_pined': event.is_pined,
+                'hex_color': event.hex_color
+            } for event in events]
+            print(events)
+            return Response(events_data, content_type='application/json')
+
         data = {"username": user.extra_data}
         return Response(data)
