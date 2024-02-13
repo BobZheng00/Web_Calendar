@@ -361,21 +361,42 @@ class UserDataView(APIView):
             } for event in events]
             return Response(events_data, content_type='application/json')
         if "create" in request.query_params:
-            input_event = InputEvents(user_id=user.user.id, event=request.query_params['event_name'],
-                                      date=datetime.datetime.strptime(request.query_params['start_date'], "%Y-%m-%d").date(),
-                                      begin_hr=request.query_params['begin_hr'],
-                                      begin_min=request.query_params['begin_min'], end_hr=request.query_params['end_hr'],
-                                      end_min=request.query_params['end_min'], description=request.query_params['description'],
-                                      is_private=request.query_params['is_private'].lower() == 'true',
-                                      is_pined=request.query_params['is_pinned'].lower() == 'true',
-                                      hex_color="#11be7c",
-                                      repeated_rule=request.query_params['repeat_pattern'],
-                                      repeated_end=datetime.datetime.strptime(request.query_params['end_date'], "%Y-%m-%d").date())
-            print(input_event)
+            input_event = InputEvents(
+                user_id=user.user.id,
+                event=request.query_params['event_name'],
+                date=datetime.datetime.strptime(request.query_params['start_date'], "%Y-%m-%d").date(),
+                begin_hr=request.query_params['begin_hr'],
+                begin_min=request.query_params['begin_min'],
+                end_hr=request.query_params['end_hr'],
+                end_min=request.query_params['end_min'],
+                description=request.query_params['description'],
+                is_private=request.query_params['is_private'].lower() == 'true',
+                is_pined=request.query_params['is_pinned'].lower() == 'true',
+                hex_color="#11be7c",
+                repeated_rule=request.query_params['repeat_pattern'],
+                repeated_end=datetime.datetime.strptime(request.query_params['end_date'], "%Y-%m-%d").date()
+            )
             valid_request, error_message = input_event.create_event()
             if valid_request:
                 return Response({"status": "success"}, content_type='application/json', status=status.HTTP_200_OK)
             else:
-                return Response({"status": "error", "message": error_message}, content_type='application/json', status=status.HTTP_400_BAD_REQUEST)
+                return Response({"status": "error", "message": error_message}, content_type='application/json',
+                                status=status.HTTP_400_BAD_REQUEST)
+        if "delete" in request.query_params:
+            input_event = InputEvents(
+                user_id=user.user.id,
+                event=request.query_params['event_name'],
+                date=datetime.datetime.strptime(request.query_params['date'], "%Y-%m-%d").date(),
+                begin_hr=request.query_params['begin_hr'],
+                begin_min=request.query_params['begin_min'],
+                end_hr=request.query_params['end_hr'],
+                end_min=request.query_params['end_min'],
+            )
+            valid_request, error_message = input_event.delete_event()
+            if valid_request:
+                return Response({"status": "success"}, content_type='application/json', status=status.HTTP_200_OK)
+            else:
+                return Response({"status": "error", "message": error_message}, content_type='application/json',
+                                status=status.HTTP_400_BAD_REQUEST)
         data = {"username": user.extra_data}
         return Response(data)
